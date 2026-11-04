@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IBONDA - Real Estate Agency Management & Automation SaaS</title>
   <meta name="description" content="منظومة ذكية متكاملة لإدارة الوكالات العقارية وأتمتة التواصل وتأهيل العملاء وجدولة المعاينات في المغرب." />
-  
-  <!-- خطوط Google: Cairo للعربية و Plus Jakarta Sans للغات اللاتينية والأرقام -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  
-  <!-- مكتبة Tailwind CSS ومحرك التفاعل الخفيف Alpine.js -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <!-- مكتبة الاحتفال بالكونفيتي عند تأكيد الموعد -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -23,6 +20,9 @@
       background-color: #070d1e;
       color: #f1f5f9;
       scroll-behavior: smooth;
+    }
+    body.font-latin-body {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
     .font-latin { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .hero-glow {
@@ -39,70 +39,48 @@
   </style>
 </head>
 
-<body x-data="ibondaApp()" class="min-h-screen selection:bg-blue-600 selection:text-white">
+<body x-data="ibondaApp()" x-init="init()" :class="lang === 'ar' ? '' : 'font-latin-body'" class="min-h-screen selection:bg-blue-600 selection:text-white">
 
-  <!-- 1. الشريـط العلـوي (NAVBAR) -->
+  <!-- 1. الهايدر: اسم الوكالة + محول اللغات فقط -->
   <header class="sticky top-0 z-50 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
-      
-      <!-- اللوجو النصي -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+
       <a href="#" class="font-latin text-2xl font-black tracking-tight text-white flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shadow-sm shadow-blue-500/50"></span>
         <span>IBONDA</span>
       </a>
 
-      <!-- روابط التنقل -->
-      <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
-        <a href="#capabilities" class="hover:text-white transition-colors" x-text="t().nav.capabilities"></a>
-        <a href="#benefits" class="hover:text-white transition-colors" x-text="t().nav.benefits"></a>
-        <a href="#calculator" class="hover:text-white transition-colors" x-text="t().nav.calculator"></a>
-        <a href="#comparison" class="hover:text-white transition-colors" x-text="t().nav.comparison"></a>
-        <a href="#faq" class="hover:text-white transition-colors" x-text="t().nav.faq"></a>
-        <a href="#booking" class="hover:text-white transition-colors" x-text="t().nav.booking"></a>
-      </nav>
-
-      <!-- محول اللغات الثلاث وزر الحجز -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
-          <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2 py-1 rounded transition">العربية</button>
-          <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2 py-1 rounded transition font-latin">EN</button>
-          <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2 py-1 rounded transition font-latin">FR</button>
-        </div>
-
-        <button @click="handleCtaClick()" class="px-3.5 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition shadow-md shadow-blue-600/30 whitespace-nowrap cursor-pointer">
-          <span x-text="t().nav.bookCta"></span>
-        </button>
+      <div class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
+        <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition">العربية</button>
+        <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">EN</button>
+        <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">FR</button>
       </div>
 
     </div>
   </header>
 
   <main>
-    <!-- 2. قسـم الـ HERO ومشغـل الـ VSL -->
+    <!-- 2. الـ HERO ومشغل الفيديو -->
     <section class="relative pt-16 sm:pt-24 pb-20 hero-glow overflow-hidden text-center">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        <!-- وسم الثقة -->
+
         <div class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-blue-400 mb-6">
           <span x-text="t().hero.trustBadge"></span>
           <span>·</span>
           <span class="font-latin font-bold">IBONDA</span>
         </div>
 
-        <!-- العنوان الرئيسي -->
         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.25] mb-6 max-w-4xl mx-auto" x-text="t().hero.title"></h1>
 
-        <!-- النص الداعم -->
         <p class="text-base sm:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto mb-12" x-text="t().hero.subtitle"></p>
 
-        <!-- مشغل الفيديو السينمائي -->
+        <!-- مشغل الفيديو -->
         <div id="vsl-section" class="w-full max-w-4xl mx-auto">
-          <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl ring-1 ring-blue-500/20 group">
-            
-            <!-- شاشة الفيديو التفاعلية (بدون أي ضبابية - Sharp Thumbnail) -->
+          <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl ring-1 ring-blue-500/20">
+
             <div class="w-full h-full relative overflow-hidden bg-[#060b1c] flex flex-col items-center justify-center p-6 text-center">
               <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, #3b82f6 1px, transparent 0); background-size: 24px 24px;"></div>
-              
+
               <template x-if="!hasStarted">
                 <div class="relative z-10 max-w-lg mx-auto">
                   <div class="text-xs font-semibold text-blue-400 mb-2 uppercase" x-text="t().hero.trustBadge"></div>
@@ -116,8 +94,7 @@
                   <span class="text-xs font-semibold text-blue-400 mb-2 block" x-text="getCurrentSlide().tag"></span>
                   <h4 class="text-base sm:text-2xl font-bold text-white mb-2" x-text="getCurrentSlide().title"></h4>
                   <p class="text-xs sm:text-sm text-slate-300 mb-6" x-text="getCurrentSlide().desc"></p>
-                  
-                  <!-- موجات تفاعلية -->
+
                   <div class="flex items-center justify-center gap-1.5 h-7">
                     <div class="w-1 bg-blue-500 rounded-full h-4 animate-pulse"></div>
                     <div class="w-1 bg-blue-500 rounded-full h-6 animate-pulse"></div>
@@ -137,9 +114,9 @@
               </div>
             </template>
 
-            <!-- إشعار اكتمال الفيديو -->
+            <!-- إشعار انتهاء الفيديو -->
             <template x-if="videoCompleted">
-              <div class="absolute top-4 inset-x-4 z-20 bg-blue-950/95 border border-blue-500/50 rounded-xl p-3.5 flex items-center justify-between text-start shadow-xl">
+              <div class="absolute top-4 inset-x-4 z-20 bg-blue-950/95 border border-blue-500/50 rounded-xl p-3.5 flex items-center justify-between gap-3 text-start shadow-xl">
                 <div>
                   <p class="text-xs sm:text-sm font-semibold text-white" x-text="t().hero.videoEndedTitle"></p>
                   <p class="text-[11px] text-slate-300" x-text="t().hero.videoEndedDesc"></p>
@@ -148,27 +125,30 @@
               </div>
             </template>
 
-            <!-- عناصر التحكم (بدون مؤقت وقت وبدون زر سرعة) -->
+            <!-- عناصر التحكم: شريط تقدم أحادي الاتجاه + زر تشغيل + صوت + ملء الشاشة -->
             <div class="absolute bottom-0 inset-x-0 z-30 p-3 sm:p-4 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent">
-              <!-- شريط التقدم المقيد (لا يمكن تقديم ما لم يتم مشاهدته) -->
-              <input type="range" min="0" :max="duration" step="0.1" :value="currentTime" @input="handleSeek($event)" class="w-full h-1.5 bg-slate-700/80 rounded appearance-none cursor-pointer accent-blue-500 mb-2">
-              
+              <!-- pointer-events-none: لا يمكن سحب الشريط، يتحرك مع التشغيل فقط -->
+              <input type="range" min="0" :max="duration" step="0.1" :value="currentTime" tabindex="-1" aria-hidden="true" class="w-full h-1.5 bg-slate-700/80 rounded appearance-none accent-blue-500 mb-2 pointer-events-none">
+
               <div class="flex items-center justify-between text-xs text-white">
                 <div class="flex items-center gap-3">
                   <button @click="togglePlay()" class="p-1.5 hover:text-blue-400">
                     <span x-show="!isPlaying">▶</span>
                     <span x-show="isPlaying">❚❚</span>
                   </button>
-                  <button @click="toggleMute()" class="p-1 hover:text-blue-400">🔊</button>
+                  <button @click="toggleMute()" class="p-1 hover:text-blue-400">
+                    <span x-show="!muted">🔊</span>
+                    <span x-show="muted">🔇</span>
+                  </button>
                 </div>
-                <button @click="testCompleteVideo()" class="text-[11px] text-blue-400 hover:underline">تجربة اكتمال الفيديو فورا</button>
+                <button @click="toggleFullscreen()" class="p-1 hover:text-blue-400" aria-label="fullscreen">⛶</button>
               </div>
             </div>
 
           </div>
         </div>
 
-        <!-- زر ما بعد الفيديو -->
+        <!-- بعد انتهاء الفيديو -->
         <template x-if="videoCompleted">
           <div class="max-w-2xl mx-auto mt-8 p-6 rounded-2xl bg-gradient-to-b from-blue-950/70 to-slate-900 border border-blue-500/30 text-center">
             <h3 class="text-xl font-bold text-white mb-2" x-text="t().postCta.title"></h3>
@@ -180,7 +160,7 @@
       </div>
     </section>
 
-    <!-- 3. قدرات المنظومة (CAPABILITIES) -->
+    <!-- 3. قدرات المنظومة -->
     <section id="capabilities" class="py-24 bg-white text-slate-900 border-t border-slate-200">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mb-16 text-start">
@@ -201,11 +181,10 @@
       </div>
     </section>
 
-    <!-- 4. فوائد الوكالة (BENEFITS - GREEN ACCENTS) -->
+    <!-- 4. الفوائد -->
     <section id="benefits" class="py-24 bg-slate-50 text-slate-900 border-t border-slate-200">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mb-16 text-start">
-          <!-- لمسة اللون الأخضر المطلوبة -->
           <div class="text-xs font-bold text-emerald-600 mb-2" x-text="t().benefits.kicker + ' · ' + t().benefits.category"></div>
           <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-950 mb-4" x-text="t().benefits.title"></h2>
           <p class="text-base sm:text-lg text-slate-600" x-text="t().benefits.subtitle"></p>
@@ -223,7 +202,7 @@
       </div>
     </section>
 
-    <!-- 5. حاسبة الخسائر (ROI / LOSS CALCULATOR) -->
+    <!-- 5. حاسبة الخسائر -->
     <section id="calculator" class="py-24 bg-slate-950 text-slate-100 border-t border-slate-900">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mb-16 text-start">
@@ -233,12 +212,11 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- مدخلات الحاسبة -->
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
             <div>
               <div class="flex justify-between text-sm font-semibold mb-2">
                 <span x-text="t().calculator.leadsLostLabel"></span>
-                <span class="text-blue-400 font-bold" x-text="leadsLost + ' / شهر'"></span>
+                <span class="text-blue-400 font-bold" x-text="leadsLost + ' ' + t().calculator.perMonth"></span>
               </div>
               <input type="range" min="1" max="200" x-model.number="leadsLost" class="w-full h-2 bg-slate-700 rounded accent-blue-500">
             </div>
@@ -262,7 +240,7 @@
             <div class="grid grid-cols-3 gap-3 pt-4 border-t border-slate-800 text-center">
               <div class="p-3 bg-slate-950 rounded-xl">
                 <div class="text-[11px] text-slate-400" x-text="t().calculator.lostDealsTitle"></div>
-                <div class="text-lg font-bold text-white" x-text="calcDeals()"></div>
+                <div class="text-lg font-bold text-white font-latin" x-text="calcDeals()"></div>
               </div>
               <div class="p-3 bg-slate-950 rounded-xl">
                 <div class="text-[11px] text-slate-400" x-text="t().calculator.moneyLostMonthTitle"></div>
@@ -273,12 +251,13 @@
                 <div class="text-lg font-bold text-amber-400 font-latin" x-text="calcYearlyLoss() + ' MAD'"></div>
               </div>
             </div>
+
+            <p class="text-[11px] text-slate-500 text-center" x-text="t().calculator.note"></p>
           </div>
 
-          <!-- تقييم الخطورة وزر الحجز -->
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
             <div>
-              <div class="p-4 rounded-xl border mb-6" :class="calcMonthlyLoss() < 10000 ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : (calcMonthlyLoss() <= 50000 ? 'border-amber-500 bg-amber-500/10 text-amber-400' : 'border-rose-500 bg-rose-500/10 text-rose-400')">
+              <div class="p-4 rounded-xl border mb-6" :class="dangerClasses()">
                 <div class="font-bold text-sm mb-1" x-text="getDangerLabel()"></div>
                 <p class="text-xs leading-relaxed" x-text="getDangerMsg()"></p>
               </div>
@@ -290,7 +269,7 @@
       </div>
     </section>
 
-    <!-- 6. المقارنة (TRADITIONAL RED vs IBONDA GREEN) -->
+    <!-- 6. المقارنة -->
     <section id="comparison" class="py-24 bg-white text-slate-900 border-t border-slate-200">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mb-16 text-start">
@@ -300,16 +279,16 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- البطاقة التقليدية - تفاصيل بالأحمر -->
+          <!-- البطاقة التقليدية (أحمر) -->
           <div class="rounded-2xl border-2 border-rose-300 bg-rose-50/20 p-6 sm:p-8 flex flex-col justify-between relative">
-            <div class="absolute top-0 end-8 -translate-y-1/2 bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full font-latin" x-text="t().comparison.traditionalBadge"></div>
+            <div class="absolute top-0 end-8 -translate-y-1/2 bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full" x-text="t().comparison.traditionalBadge"></div>
             <div>
               <div class="flex items-center justify-between pb-6 mb-6 border-b border-rose-200">
                 <h3 class="text-xl font-bold text-slate-900" x-text="t().comparison.traditionalTitle"></h3>
                 <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold">✕</div>
               </div>
               <div class="space-y-4">
-                <template x-for="item in t().comparison.items">
+                <template x-for="item in t().comparison.items" :key="item.category">
                   <div class="flex items-start gap-3">
                     <span class="text-rose-600 font-bold">✕</span>
                     <div>
@@ -323,16 +302,16 @@
             <div class="mt-8 pt-6 border-t border-rose-200 text-xs font-semibold text-rose-600" x-text="t().comparison.traditionalFooter"></div>
           </div>
 
-          <!-- بطاقة IBONDA - تفاصيل بالأخضر -->
+          <!-- بطاقة IBONDA (أخضر) -->
           <div class="rounded-2xl border-2 border-emerald-500/50 bg-emerald-50/25 p-6 sm:p-8 flex flex-col justify-between relative shadow-lg shadow-emerald-500/5">
-            <div class="absolute top-0 end-8 -translate-y-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full font-latin" x-text="t().comparison.ibondaBadge"></div>
+            <div class="absolute top-0 end-8 -translate-y-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full" x-text="t().comparison.ibondaBadge"></div>
             <div>
               <div class="flex items-center justify-between pb-6 mb-6 border-b border-emerald-200">
                 <h3 class="text-xl font-bold text-slate-900" x-text="t().comparison.ibondaTitle"></h3>
                 <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">✓</div>
               </div>
               <div class="space-y-4">
-                <template x-for="item in t().comparison.items">
+                <template x-for="item in t().comparison.items" :key="item.category">
                   <div class="flex items-start gap-3">
                     <span class="text-emerald-600 font-bold">✓</span>
                     <div>
@@ -349,7 +328,7 @@
       </div>
     </section>
 
-    <!-- 7. استمارة الحجز (مقفلة بالفيديو VIDEO-GATED) -->
+    <!-- 7. الحجز (مقفل حتى نهاية الفيديو) -->
     <section id="booking" class="py-24 bg-slate-950 text-slate-100">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-10">
@@ -357,69 +336,59 @@
           <p class="text-sm sm:text-base text-slate-300" x-text="t().booking.subtitle"></p>
         </div>
 
-        <!-- حالة القفل (إذا لم يكتمل الفيديو بعد) -->
         <template x-if="!videoCompleted">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 sm:p-12 text-center max-w-xl mx-auto">
             <div class="w-14 h-14 rounded-full bg-blue-600/15 text-blue-400 border border-blue-500/30 flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
             <h3 class="text-base sm:text-lg font-bold text-white mb-2" x-text="t().booking.lockedNotice"></h3>
-            <button @click="scrollToVideo()" class="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition cursor-pointer">
-              <span x-text="t().hero.vslTitle"></span>
-            </button>
+            <button @click="scrollToVideo()" class="mt-4 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition cursor-pointer" x-text="t().booking.watchNow"></button>
           </div>
         </template>
 
-        <!-- استمارة الـ 3 خطوات (تظهر تلقائياً بعد انتهاء الفيديو) -->
         <template x-if="videoCompleted">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl">
-            
-            <!-- الخطوة 1: إدخال البيانات -->
+
+            <!-- الخطوة 1 -->
             <template x-if="step === 1">
               <form @submit.prevent="submitStep1()" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
-                  
-                  <!-- الاسم الكامل -->
+
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.fullName + ' *'"></label>
                     <input type="text" x-model="form.fullName" required :placeholder="t().booking.fields.fullNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                   </div>
 
-                  <!-- رقم الهاتف -->
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.phone + ' *'"></label>
                     <input type="tel" dir="ltr" x-model="form.phone" required :placeholder="t().booking.fields.phonePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
                     <p class="text-[10px] text-slate-500 mt-1" x-text="t().booking.fields.phoneHelper"></p>
                   </div>
 
-                  <!-- اسم الوكالة -->
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.agencyName + ' *'"></label>
                     <input type="text" x-model="form.agencyName" required :placeholder="t().booking.fields.agencyNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                   </div>
 
-                  <!-- المدينة -->
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.city + ' *'"></label>
                     <select x-model="form.city" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
-                      <option value="" disabled selected x-text="t().booking.fields.cityPlaceholder"></option>
-                      <template x-for="c in t().booking.moroccanCities"><option :value="c" x-text="c"></option></template>
+                      <option value="" disabled x-text="t().booking.fields.cityPlaceholder"></option>
+                      <template x-for="c in t().booking.moroccanCities" :key="c"><option :value="c" x-text="c"></option></template>
                     </select>
                   </div>
 
-                  <!-- عدد العملاء المحتملين يومياً (الخيارات الأربعة) -->
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.dailyLeads + ' *'"></label>
                     <select x-model="form.dailyLeads" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
-                      <option value="" disabled selected x-text="t().booking.fields.dailyLeads"></option>
-                      <template x-for="opt in t().booking.dailyLeadsOptions"><option :value="opt.value" x-text="opt.label"></option></template>
+                      <option value="" disabled x-text="t().booking.fields.dailyLeadsPlaceholder"></option>
+                      <template x-for="opt in t().booking.dailyLeadsOptions" :key="opt.value"><option :value="opt.value" x-text="opt.label"></option></template>
                     </select>
                   </div>
 
-                  <!-- عدد أفراد الوكالة ككل -->
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.agencyStaff + ' *'"></label>
                     <select x-model="form.agencyStaff" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
-                      <option value="" disabled selected x-text="t().booking.fields.agencyStaff"></option>
-                      <template x-for="opt in t().booking.agencyStaffOptions"><option :value="opt.value" x-text="opt.label"></option></template>
+                      <option value="" disabled x-text="t().booking.fields.agencyStaffPlaceholder"></option>
+                      <template x-for="opt in t().booking.agencyStaffOptions" :key="opt.value"><option :value="opt.value" x-text="opt.label"></option></template>
                     </select>
                   </div>
 
@@ -432,12 +401,12 @@
               </form>
             </template>
 
-            <!-- الخطوة 2: اختيار موعد الاستشارة -->
+            <!-- الخطوة 2 -->
             <template x-if="step === 2">
               <div class="space-y-6 text-start">
                 <h3 class="text-lg font-bold text-white" x-text="t().booking.step2Heading"></h3>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <template x-for="time in ['10:00', '11:00', '12:00', '14:30', '15:30', '16:30', '17:00']">
+                  <template x-for="time in ['10:00', '11:00', '12:00', '14:30', '15:30', '16:30', '17:00']" :key="time">
                     <button type="button" @click="selectedTime = time" :class="selectedTime === time ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300'" class="p-3 rounded-xl border text-center transition cursor-pointer font-latin" x-text="time"></button>
                   </template>
                 </div>
@@ -448,7 +417,7 @@
               </div>
             </template>
 
-            <!-- الخطوة 3: شاشة التأكيد -->
+            <!-- الخطوة 3 -->
             <template x-if="step === 3">
               <div class="text-center py-6">
                 <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
@@ -464,7 +433,7 @@
       </div>
     </section>
 
-    <!-- 8. الأسئلة الشائعة (FAQ) -->
+    <!-- 8. الأسئلة الشائعة -->
     <section id="faq" class="py-24 bg-slate-50 text-slate-900 border-t border-slate-200">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-16">
@@ -485,7 +454,7 @@
     </section>
   </main>
 
-  <!-- 9. التذييل (FOOTER - بدون كتلة التواصل) -->
+  <!-- 9. التذييل -->
   <footer class="bg-slate-950 text-slate-400 border-t border-slate-900 pt-16 pb-12">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-slate-900 text-start">
@@ -520,7 +489,7 @@
     </div>
   </footer>
 
-  <!-- 10. سكربت البيانات التفاعلية والترجمات (Alpine.js) -->
+  <!-- 10. المنطق والترجمات -->
   <script>
     function ibondaApp() {
       return {
@@ -528,9 +497,11 @@
         videoCompleted: false,
         isPlaying: false,
         hasStarted: false,
+        muted: false,
         currentTime: 0,
-        duration: 275,
-        maxWatched: 0,
+        duration: 275,          // المدة بالثواني (4:35) - تُستخدم داخلياً فقط
+        fastSeconds: 20,        // أول 20 ثانية بسرعة 1.5
+        timer: null,
         step: 1,
         selectedTime: '',
         leadsLost: 10,
@@ -538,31 +509,62 @@
         closingRate: 10,
         form: { fullName: '', phone: '', agencyName: '', city: '', dailyLeads: '', agencyStaff: '' },
 
+        init() {
+          this.setLang('ar');
+        },
+
         setLang(l) {
           this.lang = l;
           document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
           document.documentElement.lang = l;
         },
 
+        // تشغيل المؤقت المحاكي - استبدله بـ video.play() و video.playbackRate عند ربط الفيديو الحقيقي
+        startTimer() {
+          if (this.timer) return;
+          this.timer = setInterval(() => {
+            const rate = this.currentTime < this.fastSeconds ? 1.5 : 1.0;
+            this.currentTime = Math.min(this.duration, this.currentTime + 0.1 * rate);
+            if (this.currentTime >= this.duration) {
+              this.finishVideo();
+            }
+          }, 100);
+        },
+
+        pauseTimer() {
+          clearInterval(this.timer);
+          this.timer = null;
+        },
+
+        finishVideo() {
+          this.pauseTimer();
+          this.isPlaying = false;
+          this.videoCompleted = true;
+        },
+
         togglePlay() {
           this.hasStarted = true;
           this.isPlaying = !this.isPlaying;
-        },
-        toggleMute() {},
-        handleSeek(e) {
-          const val = parseFloat(e.target.value);
-          if (val > this.maxWatched) {
-            this.currentTime = this.maxWatched;
+          if (this.isPlaying) {
+            this.startTimer();
           } else {
-            this.currentTime = val;
+            this.pauseTimer();
           }
         },
-        testCompleteVideo() {
-          this.currentTime = this.duration;
-          this.isPlaying = false;
-          this.videoCompleted = true;
-          setTimeout(() => this.scrollToBooking(), 300);
+
+        toggleMute() {
+          this.muted = !this.muted;
         },
+
+        toggleFullscreen() {
+          const el = document.getElementById('vsl-section');
+          if (!document.fullscreenElement) {
+            el.requestFullscreen && el.requestFullscreen();
+          } else {
+            document.exitFullscreen && document.exitFullscreen();
+          }
+        },
+
         handleCtaClick() {
           if (!this.videoCompleted) {
             this.scrollToVideo();
@@ -570,49 +572,70 @@
             this.scrollToBooking();
           }
         },
+
         scrollToVideo() {
           document.getElementById('vsl-section').scrollIntoView({ behavior: 'smooth' });
         },
+
         scrollToBooking() {
           document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
         },
+
         submitStep1() {
           this.step = 2;
         },
+
         confirmBooking() {
           this.step = 3;
           if (window.confetti) {
             confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
           }
         },
+
         calcDeals() {
           return Math.round(this.leadsLost * (this.closingRate / 100) * 10) / 10;
         },
+
         calcMonthlyLoss() {
           return Math.round(this.calcDeals() * this.avgCommission);
         },
+
         calcYearlyLoss() {
           return this.calcMonthlyLoss() * 12;
         },
+
+        getDangerLevel() {
+          const l = this.calcMonthlyLoss();
+          if (l < 10000) return 'low';
+          if (l <= 50000) return 'mid';
+          return 'high';
+        },
+
+        dangerClasses() {
+          const level = this.getDangerLevel();
+          if (level === 'low') return 'border-emerald-500 bg-emerald-500/10 text-emerald-400';
+          if (level === 'mid') return 'border-amber-500 bg-amber-500/10 text-amber-400';
+          return 'border-rose-500 bg-rose-500/10 text-rose-400';
+        },
+
         getDangerLabel() {
-          const l = this.calcMonthlyLoss();
-          return l < 10000 ? 'خطر منخفض (Low Risk)' : (l <= 50000 ? 'خطر متوسط (Moderate Risk)' : 'خطر مرتفع (High Risk)');
+          return this.t().calculator.dangerLabels[this.getDangerLevel()];
         },
+
         getDangerMsg() {
-          const l = this.calcMonthlyLoss();
-          return l > 50000 
-            ? 'أنت تخسر فرص بيع حقيقية كل شهر دون أن تشعر بسبب تأخر الرد وعدم المتابعة.'
-            : 'أنت تفقد صفقات يمكن استرجاعها بأتمتة بسيطة لعملية التواصل وفرز العملاء الجادين.';
+          return this.t().calculator.dangerMsgs[this.getDangerLevel()];
         },
+
         getCurrentSlide() {
           const slides = this.t().hero.vslSlides;
           const idx = Math.min(3, Math.floor((this.currentTime / this.duration) * 4));
           return slides[idx] || slides[0];
         },
+
         t() {
           const dict = {
             ar: {
-              nav: { capabilities: 'المميزات', benefits: 'الفوائد', calculator: 'حاسبة الخسائر', comparison: 'مقارنة المنظومة', faq: 'الأسئلة الشائعة', booking: 'حجز الاستشارة', bookCta: 'احجز استشارة مجانية معنا' },
+              nav: { capabilities: 'المميزات', benefits: 'الفوائد', calculator: 'حاسبة الخسائر', comparison: 'مقارنة المنظومة', faq: 'الأسئلة الشائعة' },
               hero: {
                 trustBadge: 'منظومة ذكية لإدارة الوكالات العقارية بالمغرب',
                 title: 'نظام واحد لإدارة وكالتك العقارية، من أول رسالة إلى المعاينة.',
@@ -649,23 +672,40 @@
                   { title: 'التركيز على العملاء الجادين فقط', desc: 'المعاينة فقط مع عملاء يمتلكون الميزانية والجاهزية المؤكدة.' }
                 ]
               },
-              calculator: { kicker: 'حاسبة العائد والفرص', category: 'تحليل تكلفة الفرص الضائعة', title: 'احسب كم تخسر كل شهر', subtitle: 'اكتشف الإيرادات التي تفقدها وكالتك شهرياً بسبب تأخر الردود.', leadsLostLabel: 'العملاء الضائعون شهرياً', avgCommissionLabel: 'متوسط العمولة لكل صفقة بالدرهم (MAD)', closingRateLabel: 'نسبة الإغلاق المقدرة', lostDealsTitle: 'الصفقات الضائعة', moneyLostMonthTitle: 'الخسارة الشهرية', moneyLostYearTitle: 'الخسارة السنوية', ctaButton: 'احجز استشارة مجانية معنا' },
+              calculator: {
+                kicker: 'حاسبة العائد والفرص', category: 'تحليل تكلفة الفرص الضائعة', title: 'احسب كم تخسر كل شهر', subtitle: 'اكتشف الإيرادات التي تفقدها وكالتك شهرياً بسبب تأخر الردود.',
+                leadsLostLabel: 'العملاء الضائعون شهرياً', avgCommissionLabel: 'متوسط العمولة لكل صفقة بالدرهم (MAD)', closingRateLabel: 'نسبة الإغلاق المقدرة',
+                lostDealsTitle: 'الصفقات الضائعة', moneyLostMonthTitle: 'الخسارة الشهرية', moneyLostYearTitle: 'الخسارة السنوية',
+                perMonth: '/ شهر', note: 'الأرقام تقريبية وتعتمد على المدخلات التي تضعها.', ctaButton: 'احجز استشارة مجانية معنا',
+                dangerLabels: { low: 'خطر منخفض', mid: 'خطر متوسط', high: 'خطر مرتفع' },
+                dangerMsgs: {
+                  low: 'أنت تفقد صفقات يمكن استرجاعها بأتمتة بسيطة لعملية التواصل وفرز العملاء الجادين.',
+                  mid: 'فرص بيع مهمة تضيع كل شهر، والأتمتة كفيلة بتقليص هذا الضياع بشكل كبير.',
+                  high: 'أنت تخسر فرص بيع حقيقية كل شهر دون أن تشعر بسبب تأخر الرد وعدم المتابعة.'
+                }
+              },
               comparison: {
-                kicker: 'الفارق الجوهري', category: 'مقارنة أسلوب العمل', title: 'العمل التقليدي مقابل منظومة IBONDA الذكية', subtitle: 'مقارنة بين الطرق التقليدية المجهدة والانتقال لنظام رقمي سلس.',
-                traditionalBadge: 'الوضع الراهن', traditionalTitle: 'العمل التقليدي في الوكالات', traditionalFooter: 'النتيجة: إرهاق مستمر، ضياع عملاء محتملين، وضغط دائم على فريق العمل.',
+                kicker: 'الفارق الجوهري', category: 'مقارنة أسلوب العمل', title: 'العمل التقليدي مقابل منظومة IBONDA الذكية', subtitle: 'مقارنة بين الطرق التقليدية المجهدة والانتقال لنظام رقمي سلس ومنضبط.',
+                traditionalBadge: 'الوضع الراهن', traditionalTitle: 'العمل التقليدي في الوكالات', traditionalFooter: 'النتيجة: إرهاق مستمر، ضياع عملاء محتملين، وضغط دائم على فريق المبيعات.',
                 ibondaBadge: 'المنظومة الحديثة', ibondaTitle: 'منظومة IBONDA المتكاملة', ibondaFooter: 'النتيجة: وضوح كامل، سرعة استجابة فورية، ومعاينات مجدولة فقط مع الجادين.',
                 items: [
-                  { category: 'تتبع العملاء والطلبات', traditional: 'تسجيل يدوي متفرق في دفاتر ورقية ومحادثات شخصية تضيع بسهولة.', ibonda: 'إدارة مركزية موحدة تسجل كل عميل جديد فوراً وتحدد مصدره تلقائياً.' },
+                  { category: 'تتبع العملاء والطلبات', traditional: 'تسجيل يدوي متفرق في دفاتر ورقية ورسائل محادثات شخصية تضيع بسهولة.', ibonda: 'إدارة مركزية موحدة تسجل كل عميل جديد فوراً وتحدد مصدره تلقائياً.' },
                   { category: 'التواصل والمتابعة', traditional: 'متابعات يدوية غير منتظمة، وتأخر في الرد يفقد العميل حماسه.', ibonda: 'تواصل مؤتمت وسريع عبر القنوات المفضلة، مع ردود وتذكيرات فورية.' },
                   { category: 'جدولة المعاينات', traditional: 'مكالمات متبادلة وتضارب في المواعيد ونسبة غياب عالية دون اعتذار.', ibonda: 'جدولة دقيقة ومنظمة للمواعيد حسب توفر المستشار مع تأكيدات مباشرة.' }
                 ]
               },
               booking: {
-                title: 'احجز استشارة مجانية معنا', subtitle: 'استشارة مجانية 1 على 1 · 30 دقيقة عبر Google Meet · بدون أي التزام', lockedNotice: 'شاهد الفيديو كاملاً لتتمكن من حجز استشارتك المجانية',
-                fields: { fullName: 'الاسم الكامل', fullNamePlaceholder: 'مثال: يوسف الإدريسي', phone: 'رقم الهاتف', phonePlaceholder: '06XXXXXXXX أو +2126XXXXXXXX', phoneHelper: 'يرجى إدخال رقم مغربي نشط لتلقي تفاصيل الموعد', agencyName: 'اسم الوكالة العقارية', agencyNamePlaceholder: 'مثال: أطلس للعقارات', city: 'المدينة', cityPlaceholder: 'اختر المدينة', dailyLeads: 'عدد العملاء المحتملين يومياً', agencyStaff: 'عدد أفراد الوكالة' },
+                title: 'احجز استشارة مجانية معنا', subtitle: 'استشارة مجانية 1 على 1 · 30 دقيقة عبر Google Meet · بدون أي التزام', lockedNotice: 'شاهد الفيديو كاملاً لتتمكن من حجز استشارتك المجانية', watchNow: 'شاهد الفيديو',
+                fields: { fullName: 'الاسم الكامل', fullNamePlaceholder: 'مثال: يوسف الإدريسي', phone: 'رقم الهاتف', phonePlaceholder: '06XXXXXXXX أو +2126XXXXXXXX', phoneHelper: 'يرجى إدخال رقم مغربي نشط لتلقي تفاصيل الموعد', agencyName: 'اسم الوكالة العقارية', agencyNamePlaceholder: 'مثال: أطلس للعقارات', city: 'المدينة', cityPlaceholder: 'اختر المدينة', dailyLeads: 'عدد العملاء المحتملين يومياً', dailyLeadsPlaceholder: 'اختر العدد', agencyStaff: 'عدد أفراد الوكالة', agencyStaffPlaceholder: 'اختر العدد' },
                 dailyLeadsOptions: [{ value: '1_50', label: 'من 1 إلى 50' }, { value: '50_100', label: 'من 50 إلى 100' }, { value: '100_300', label: 'من 100 إلى 300' }, { value: 'more_300', label: 'أكثر من 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 إلى 3' }, { value: '4_10', label: '4 إلى 10' }, { value: '11_25', label: '11 إلى 25' }, { value: 'more_25', label: 'أكثر من 25' }],
-                moroccanCities: ['الدار البيضاء (Casablanca)', 'الرباط (Rabat)', 'مراكش (Marrakech)', 'طنجة (Tangier)', 'أكادير (Agadir)', 'فاس (Fes)', 'مكناس (Meknes)', 'مدينة أخرى بالمغرب'],
+                moroccanCities: [
+                  'الدار البيضاء', 'الرباط', 'مراكش', 'فاس', 'طنجة', 'أكادير', 'مكناس', 'وجدة', 'القنيطرة', 'تطوان',
+                  'سلا', 'المحمدية', 'تمارة', 'الجديدة', 'الناظور', 'سطات', 'خريبكة', 'بني ملال', 'آسفي', 'العرائش',
+                  'القصر الكبير', 'برشيد', 'تازة', 'الصويرة', 'الخميسات', 'الرشيدية', 'ورزازات', 'كلميم', 'الداخلة', 'العيون',
+                  'طان طان', 'إنزكان', 'تارودانت', 'إفران', 'أزرو', 'سيدي قاسم', 'سيدي سليمان', 'قلعة السراغنة', 'اليوسفية', 'بنguerir',
+                  'شفشاون', 'الحسيمة', 'وزان', 'صفرو', 'أزمور', 'فكيك', 'تيزنيت', 'بركان', 'مدينة أخرى بالمغرب'
+                ],
                 reassurance: 'بياناتك سرية تماماً وتستخدم فقط لترتيب جلسة الاستشارة.', submitStep1: 'متابعة لاختيار موعد الاستشارة', step2Heading: 'حدد موعد الاستشارة الأنسب لك', editData: 'تعديل البيانات', confirmAppointment: 'تأكيد حجز الاستشارة المجانية', confirmationTitle: 'تم تأكيد حجز موعد الاستشارة بنجاح!', confirmationDesc: (n, a) => `شكراً لك يا ${n}. تم تثبيت الموعد المخصص لوكالة ${a}. سنرسل لك رابط اللقاء وتفاصيل الاستشارة.`, bookAnother: 'حجز استشارة لوكالة أخرى'
               },
               faq: {
@@ -678,20 +718,21 @@
               },
               footer: { desc: 'المنظومة الذكية لإدارة وتطوير الوكالات العقارية بالمغرب.', tagline: 'منظومة ذكية لإدارة الوكالات العقارية · الدار البيضاء، المغرب', allRightsReserved: 'جميع الحقوق محفوظة', privacyLink: 'سياسة الخصوصية وسرية البيانات', termsLink: 'الشروط والأحكام', timezone: 'توقيت الدار البيضاء (GMT+1)' }
             },
+
             en: {
-              nav: { capabilities: 'Capabilities', benefits: 'Benefits', calculator: 'Loss Calculator', comparison: 'Comparison', faq: 'FAQ', booking: 'Book Consultation', bookCta: 'Book a free consultation with us' },
+              nav: { capabilities: 'Capabilities', benefits: 'Benefits', calculator: 'Loss Calculator', comparison: 'Comparison', faq: 'FAQ' },
               hero: {
                 trustBadge: 'Intelligent System for Real Estate Agencies in Morocco',
                 title: 'One intelligent system to manage your real estate agency, from the first message to the property visit.',
                 subtitle: 'Organize your leads, automate your communication, track your team, and schedule visits through a unified system built specifically for real estate agencies.',
                 vslTitle: 'Watch the IBONDA Product Walkthrough',
-                vslSubtitle: 'See how to transition your real estate agency from scattered phone notes to an automated system that qualifies leads and books property visits.',
+                vslSubtitle: 'See how to move your agency from scattered phone notes to an automated system that qualifies leads and books property visits.',
                 videoEndedTitle: 'Video Walkthrough Complete!',
                 videoEndedDesc: 'The direct consultation booking form has been unlocked below.',
                 goToBooking: 'Proceed to Booking',
                 vslSlides: [
                   { tag: 'Phase 01 / Instant Response', title: 'Automated messaging across your preferred channels', desc: 'Respond within 5 seconds, filter buyer inquiries, and categorize property type and budget automatically.' },
-                  { tag: 'Phase 02 / Smart Qualification', title: 'Qualify serious clients and filter casual inquiries', desc: 'Filter out casual browsers and confirm appointments only with clients who possess budget and intent.' },
+                  { tag: 'Phase 02 / Smart Qualification', title: 'Qualify serious clients and filter casual inquiries', desc: 'Filter out casual browsers and confirm appointments only with clients who have budget and intent.' },
                   { tag: 'Phase 03 / Visit Scheduling', title: 'Schedule property visits and coordinate agency staff', desc: 'Book property viewings automatically and dispatch alerts with automated reminders.' },
                   { tag: 'Phase 04 / Central Visibility', title: 'Executive dashboard: Track every deal in real time', desc: 'Complete operational visibility from the first inquiry to deal closure.' }
                 ]
@@ -711,29 +752,46 @@
               benefits: {
                 kicker: 'Measurable Value', category: 'Operational Growth', title: 'How does IBONDA impact your agency growth?', subtitle: 'An organized sales engine running smoothly around the clock.',
                 items: [
-                  { title: 'Save Valuable Team Time', desc: 'Relieve staff from manual repetitive messaging to focus on closing.' },
+                  { title: 'Save Valuable Team Time', desc: 'Relieve staff from manual repetitive messaging to focus on visits and closing.' },
                   { title: 'Minimize Missed Opportunities', desc: 'Instant replies ensure no prospect is lost due to delayed response.' },
                   { title: 'Focus Exclusively on Serious Clients', desc: 'Pre-qualification ensures advisors only travel for budget-verified clients.' }
                 ]
               },
-              calculator: { kicker: 'Opportunity & ROI Calculator', category: 'Cost of Lost Opportunities', title: 'Calculate how much you lose each month', subtitle: 'Discover estimated revenue lost from delayed replies and unorganized follow-ups.', leadsLostLabel: 'Leads lost per month', avgCommissionLabel: 'Average commission per closed deal (MAD)', closingRateLabel: 'Closing rate (%)', lostDealsTitle: 'Lost deals', moneyLostMonthTitle: 'Monthly loss', moneyLostYearTitle: 'Annual loss', ctaButton: 'Book a free consultation with us' },
+              calculator: {
+                kicker: 'Opportunity & ROI Calculator', category: 'Cost of Lost Opportunities', title: 'Calculate how much you lose each month', subtitle: 'Discover the estimated revenue your agency loses each month due to delayed replies.',
+                leadsLostLabel: 'Leads lost per month', avgCommissionLabel: 'Average commission per closed deal (MAD)', closingRateLabel: 'Estimated closing rate (%)',
+                lostDealsTitle: 'Lost deals', moneyLostMonthTitle: 'Monthly loss', moneyLostYearTitle: 'Annual loss',
+                perMonth: '/ month', note: 'Figures are estimates based on the inputs you enter.', ctaButton: 'Book a free consultation with us',
+                dangerLabels: { low: 'Low risk', mid: 'Moderate risk', high: 'High risk' },
+                dangerMsgs: {
+                  low: 'You are losing deals that can be recovered with simple automation of messaging and lead qualification.',
+                  mid: 'Significant sales opportunities slip away each month, and automation can greatly reduce this loss.',
+                  high: 'You are losing real sales opportunities every month without noticing, due to slow replies and weak follow-up.'
+                }
+              },
               comparison: {
-                kicker: 'The Difference', category: 'Workflow Comparison', title: 'Traditional Workflow vs IBONDA Intelligent System', subtitle: 'Direct comparison between manual habits and an automated system.',
-                traditionalBadge: 'Current Reality', traditionalTitle: 'Typical Agency Operations', traditionalFooter: 'Outcome: Constant fatigue, missed prospective buyers, and persistent team stress.',
-                ibondaBadge: 'Modern System', ibondaTitle: 'Integrated IBONDA System', ibondaFooter: 'Outcome: Complete clarity, instantaneous response, and visits scheduled only with serious buyers.',
+                kicker: 'The Difference', category: 'Workflow Comparison', title: 'Traditional Workflow vs IBONDA Intelligent System', subtitle: 'A direct comparison between manual habits and an automated, organized system.',
+                traditionalBadge: 'Current Reality', traditionalTitle: 'Typical Agency Operations', traditionalFooter: 'Outcome: Constant fatigue, missed prospective buyers, and persistent pressure on the sales team.',
+                ibondaBadge: 'Modern System', ibondaTitle: 'Integrated IBONDA System', ibondaFooter: 'Outcome: Complete clarity, instant responses, and visits scheduled only with serious buyers.',
                 items: [
-                  { category: 'Lead Tracking', traditional: 'Manual note-taking in physical journals and chats that get buried.', ibonda: 'Centralized management that logs every new prospect immediately.' },
-                  { category: 'Communication', traditional: 'Irregular manual follow-ups and delayed replies that cause lost deals.', ibonda: 'Automated messaging across preferred channels with instant responses.' },
-                  { category: 'Visit Coordination', traditional: 'Endless back-and-forth calls and double-booked visits.', ibonda: 'Organized scheduling matched to advisor availability with confirmations.' }
+                  { category: 'Lead Tracking', traditional: 'Scattered manual notes in paper notebooks and personal chats that easily get lost.', ibonda: 'Centralized management that logs every new prospect immediately and identifies its source automatically.' },
+                  { category: 'Communication', traditional: 'Irregular manual follow-ups and delayed replies that make prospects lose interest.', ibonda: 'Automated, fast messaging across preferred channels, with instant replies and reminders.' },
+                  { category: 'Visit Coordination', traditional: 'Endless back-and-forth calls, double-booked visits, and a high no-show rate.', ibonda: 'Organized scheduling matched to advisor availability, with direct confirmations.' }
                 ]
               },
               booking: {
-                title: 'Book a free consultation with us', subtitle: 'Free 1-on-1 consultation · 30 minutes via Google Meet · No obligation', lockedNotice: 'Watch the full video to unlock your free consultation booking',
-                fields: { fullName: 'Full name', fullNamePlaceholder: 'e.g., Youssef El Idrissi', phone: 'Phone number', phonePlaceholder: '06XXXXXXXX or +2126XXXXXXXX', phoneHelper: 'Please enter an active Moroccan phone number to receive appointment details', agencyName: 'Real estate agency name', agencyNamePlaceholder: 'e.g., Atlas Prestige Properties', city: 'City', cityPlaceholder: 'Select your city', dailyLeads: 'Daily new leads', agencyStaff: 'Number of agency staff' },
-                dailyLeadsOptions: [{ value: '1_50', label: 'From 1 to 50' }, { value: '50_100', label: '50 to 100' }, { value: '100_300', label: '100 to 300' }, { value: 'more_300', label: 'More than 300' }],
+                title: 'Book a free consultation with us', subtitle: 'Free 1-on-1 consultation · 30 minutes via Google Meet · No obligation', lockedNotice: 'Watch the full video to unlock your free consultation booking', watchNow: 'Watch the video',
+                fields: { fullName: 'Full name', fullNamePlaceholder: 'e.g., Youssef El Idrissi', phone: 'Phone number', phonePlaceholder: '06XXXXXXXX or +2126XXXXXXXX', phoneHelper: 'Please enter an active Moroccan phone number to receive appointment details', agencyName: 'Real estate agency name', agencyNamePlaceholder: 'e.g., Atlas Prestige Properties', city: 'City', cityPlaceholder: 'Select your city', dailyLeads: 'Daily new leads', dailyLeadsPlaceholder: 'Select a range', agencyStaff: 'Number of agency staff', agencyStaffPlaceholder: 'Select a range' },
+                dailyLeadsOptions: [{ value: '1_50', label: 'From 1 to 50' }, { value: '50_100', label: 'From 50 to 100' }, { value: '100_300', label: 'From 100 to 300' }, { value: 'more_300', label: 'More than 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 to 3' }, { value: '4_10', label: '4 to 10' }, { value: '11_25', label: '11 to 25' }, { value: 'more_25', label: 'More than 25' }],
-                moroccanCities: ['Casablanca', 'Rabat', 'Marrakech', 'Tangier', 'Agadir', 'Fes', 'Meknes', 'Other Moroccan City'],
-                reassurance: 'Your information is confidential and used exclusively to arrange your consultation.', submitStep1: 'Continue to Select Consultation Date', step2Heading: 'Select your preferred consultation time', editData: 'Edit Details', confirmAppointment: 'Confirm Free Consultation Booking', confirmationTitle: 'Consultation Successfully Confirmed!', confirmationDesc: (n, a) => `Thank you ${n}. Your consultation for ${a} has been reserved. Access link will be sent to your phone.`, bookAnother: 'Book consultation for another agency'
+                moroccanCities: [
+                  'Casablanca', 'Rabat', 'Marrakech', 'Fes', 'Tangier', 'Agadir', 'Meknes', 'Oujda', 'Kenitra', 'Tetouan',
+                  'Salé', 'Mohammedia', 'Témara', 'El Jadida', 'Nador', 'Settat', 'Khouribga', 'Beni Mellal', 'Safi', 'Larache',
+                  'Ksar El Kebir', 'Berrechid', 'Taza', 'Essaouira', 'Khemisset', 'Errachidia', 'Ouarzazate', 'Guelmim', 'Dakhla', 'Laayoune',
+                  'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
+                  'Chefchaouen', 'Al Hoceima', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Other Moroccan city'
+                ],
+                reassurance: 'Your information is confidential and used exclusively to arrange your consultation.', submitStep1: 'Continue to Select Consultation Date', step2Heading: 'Select your preferred consultation time', editData: 'Edit Details', confirmAppointment: 'Confirm Free Consultation Booking', confirmationTitle: 'Consultation Successfully Confirmed!', confirmationDesc: (n, a) => `Thank you ${n}. Your consultation for ${a} has been reserved. The access link will be sent to you.`, bookAnother: 'Book consultation for another agency'
               },
               faq: {
                 kicker: 'Frequently Asked Questions', title: 'Clear, direct answers to common questions', subtitle: 'Key details regarding data security, migration, and the consultation process.',
@@ -745,14 +803,15 @@
               },
               footer: { desc: 'The intelligent operating system for real estate agency management in Morocco.', tagline: 'Intelligent Real Estate Agency Management System · Casablanca, Morocco', allRightsReserved: 'All rights reserved', privacyLink: 'Privacy Policy & Data Protection', termsLink: 'Terms & Conditions', timezone: 'Casablanca Time (GMT+1)' }
             },
+
             fr: {
-              nav: { capabilities: 'Fonctionnalités', benefits: 'Avantages', calculator: 'Calculateur de pertes', comparison: 'Comparatif', faq: 'FAQ', booking: 'Prendre rendez-vous', bookCta: 'Réservez une consultation gratuite avec nous' },
+              nav: { capabilities: 'Fonctionnalités', benefits: 'Avantages', calculator: 'Calculateur de pertes', comparison: 'Comparatif', faq: 'FAQ' },
               hero: {
                 trustBadge: 'Système intelligent pour agences immobilières au Maroc',
                 title: 'Un système unique pour piloter votre agence, du premier message jusqu’à la visite.',
                 subtitle: 'Organisez vos prospects, automatisez vos échanges, suivez vos équipes et planifiez vos visites grâce à un système conçu sur mesure pour les agences immobilières.',
                 vslTitle: 'Découvrez la présentation d’IBONDA',
-                vslSubtitle: 'Comment faire passer votre agence du désordre des carnets et messages éparpillés à un système fluide qui qualifie les prospects et programme les visites.',
+                vslSubtitle: 'Comment faire passer votre agence des notes éparpillées à un système fluide qui qualifie les prospects et programme les visites.',
                 videoEndedTitle: 'Vidéo de présentation terminée !',
                 videoEndedDesc: 'Le formulaire de consultation directe est débloqué ci-dessous.',
                 goToBooking: 'Accéder à la réservation',
@@ -760,7 +819,7 @@
                   { tag: 'Étape 01 / Réponse immédiate', title: 'Messagerie automatisée instantanée sur vos canaux préférés', desc: 'Réponse en moins de 5 secondes, tri des demandes d’acheteurs et qualification automatique du budget.' },
                   { tag: 'Étape 02 / Qualification intelligente', title: 'Qualifiez les acheteurs sérieux et écartez les curieux', desc: 'Filtrez les demandes non qualifiées et réservez vos visites uniquement avec les acheteurs disposant d’un vrai budget.' },
                   { tag: 'Étape 03 / Planification des visites', title: 'Planifiez les visites et coordonnez les conseillers', desc: 'Programmation autonome des visites selon les disponibilités avec rappels automatiques.' },
-                  { tag: 'Étape 04 / Pilotage centralisé', title: 'Tableau de bord : Suivi de chaque transaction en temps réel', desc: 'Visibilité totale du premier contact à la signature avec indicateurs de performance.' }
+                  { tag: 'Étape 04 / Pilotage centralisé', title: 'Tableau de bord : suivi de chaque transaction en temps réel', desc: 'Visibilité totale du premier contact à la signature avec indicateurs de performance.' }
                 ]
               },
               postCta: { title: 'Prêt à propulser la gestion de votre agence au niveau supérieur ?', subtitle: 'Bénéficiez d’une consultation en direct de 30 minutes où nous vous montrons comment déployer IBONDA dans votre agence.', button: 'Réservez une consultation gratuite avec nous' },
@@ -769,7 +828,7 @@
                 items: [
                   { title: 'Gestion Centralisée des Prospects', desc: 'Centralisez toutes les demandes d’acheteurs dans un pipeline unifié.', badge: 'Pipeline Unique' },
                   { title: 'Messagerie automatisée instantanée sur vos canaux préférés', desc: 'Répondez en quelques secondes pour capter l’attention du client.', badge: 'Réponse 24/7' },
-                  { title: 'Qualification & Tri des Prospects Sérieux', desc: 'Questions de qualification programmées sur le budget et le secteur.', badge: 'Tri Intelligent' },
+                  { title: 'Qualification & Tri des Prospects Sérieux', desc: 'Questions de qualification programmées sur le budget et le type de bien.', badge: 'Tri Intelligent' },
                   { title: 'Planification des Visites Immobilières', desc: 'Permettez la réservation de créneaux de visite selon les disponibilités.', badge: 'Visites Cadrées' },
                   { title: 'Notifications Immédiates pour l’Équipe', desc: 'Attribution automatique des prospects qualifiés avec alertes mobiles.', badge: 'Routage Automatique' },
                   { title: 'Tableau de Bord Central', desc: 'Visibilité totale pour le dirigeant : volume de prospects et conversion.', badge: 'Vue Direction' }
@@ -783,27 +842,44 @@
                   { title: 'Concentration sur les Clients Vraiment Sérieux', desc: 'Le pré-filtrage écarte les curieux pour ne se déplacer qu’avec des acheteurs solvables.' }
                 ]
               },
-              calculator: { kicker: 'Calculateur de Rentabilité', category: 'Coût des Opportunités Manquées', title: 'Calculez combien vous perdez chaque mois', subtitle: 'Découvrez l’estimation du chiffre d’affaires qui échappe à votre agence chaque mois.', leadsLostLabel: 'Prospects perdus par mois', avgCommissionLabel: 'Commission moyenne par transaction (MAD)', closingRateLabel: 'Taux de conversion moyen (%)', lostDealsTitle: 'Transactions manquées', moneyLostMonthTitle: 'Perte mensuelle', moneyLostYearTitle: 'Perte annuelle', ctaButton: 'Réservez une consultation gratuite avec nous' },
+              calculator: {
+                kicker: 'Calculateur de Rentabilité', category: 'Coût des Opportunités Manquées', title: 'Calculez combien vous perdez chaque mois', subtitle: 'Découvrez le chiffre d’affaires estimé qui échappe à votre agence chaque mois.',
+                leadsLostLabel: 'Prospects perdus par mois', avgCommissionLabel: 'Commission moyenne par transaction (MAD)', closingRateLabel: 'Taux de conversion estimé (%)',
+                lostDealsTitle: 'Transactions manquées', moneyLostMonthTitle: 'Perte mensuelle', moneyLostYearTitle: 'Perte annuelle',
+                perMonth: '/ mois', note: 'Les chiffres sont indicatifs et dépendent des valeurs saisies.', ctaButton: 'Réservez une consultation gratuite avec nous',
+                dangerLabels: { low: 'Risque faible', mid: 'Risque modéré', high: 'Risque élevé' },
+                dangerMsgs: {
+                  low: 'Vous perdez des ventes récupérables grâce à une automatisation simple des échanges et à la qualification des prospects.',
+                  mid: 'D’importantes opportunités de vente s’échappent chaque mois ; l’automatisation peut fortement réduire cette perte.',
+                  high: 'Vous perdez de réelles opportunités de vente chaque mois sans vous en rendre compte, à cause des réponses tardives et d’un suivi insuffisant.'
+                }
+              },
               comparison: {
                 kicker: 'La Différence Clé', category: 'Comparatif des Méthodes', title: 'Fonctionnement Traditionnel vs Système Intelligent IBONDA', subtitle: 'Comparaison directe entre la gestion artisanale et le passage au digital.',
-                traditionalBadge: 'Situation Actuelle', traditionalTitle: 'Gestion Classique en Agence', traditionalFooter: 'Résultat : Fatigue constante, perte de prospects acheteurs et stress permanent pour les équipes.',
-                ibondaBadge: 'Système Moderne', ibondaTitle: 'Système Intégré IBONDA', ibondaFooter: 'Résultat : Clarté totale, réactivité immédiate et visites programmées exclusivement avec des acheteurs qualifiés.',
+                traditionalBadge: 'Situation Actuelle', traditionalTitle: 'Gestion Classique en Agence', traditionalFooter: 'Résultat : fatigue constante, prospects perdus et pression permanente sur les équipes.',
+                ibondaBadge: 'Système Moderne', ibondaTitle: 'Système Intégré IBONDA', ibondaFooter: 'Résultat : clarté totale, réactivité immédiate et visites programmées exclusivement avec des acheteurs qualifiés.',
                 items: [
-                  { category: 'Suivi des Prospects', traditional: 'Saisie manuelle dispersée sur des blocs-notes et messageries personnelles.', ibonda: 'Gestion centralisée enregistrant chaque prospect immédiatement.' },
+                  { category: 'Suivi des Prospects', traditional: 'Saisie manuelle dispersée sur des carnets et des messageries personnelles.', ibonda: 'Gestion centralisée enregistrant chaque prospect immédiatement et identifiant sa source.' },
                   { category: 'Échanges et Relances', traditional: 'Relances manuelles irrégulières et réponses tardives qui font perdre des ventes.', ibonda: 'Communication instantanée sur les canaux préférés avec rappels automatiques.' },
-                  { category: 'Organisation des Visites', traditional: 'Nombreux appels croisés, chevauchements d’agendas et désistements.', ibonda: 'Planning clair synchronisé avec confirmations automatiques.' }
+                  { category: 'Organisation des Visites', traditional: 'Nombreux appels croisés, chevauchements d’agendas et désistements.', ibonda: 'Planning clair synchronisé avec les disponibilités et confirmations automatiques.' }
                 ]
               },
               booking: {
-                title: 'Réservez une consultation gratuite avec nous', subtitle: 'Consultation gratuite 1-sur-1 · 30 minutes via Google Meet · Sans engagement', lockedNotice: 'Regardez la vidéo en entier pour réserver votre consultation gratuite',
-                fields: { fullName: 'Nom complet', fullNamePlaceholder: 'ex. Youssef El Idrissi', phone: 'Numéro de téléphone', phonePlaceholder: '06XXXXXXXX ou +2126XXXXXXXX', phoneHelper: 'Veuillez entrer un numéro marocain actif pour recevoir les détails du rendez-vous', agencyName: 'Nom de l’agence immobilière', agencyNamePlaceholder: 'ex. Atlas Prestige Immobilier', city: 'Ville', cityPlaceholder: 'Choisissez votre ville', dailyLeads: 'Nombre de prospects par jour', agencyStaff: 'Nombre de personnes dans l’agence' },
+                title: 'Réservez une consultation gratuite avec nous', subtitle: 'Consultation gratuite 1-sur-1 · 30 minutes via Google Meet · Sans engagement', lockedNotice: 'Regardez la vidéo en entier pour réserver votre consultation gratuite', watchNow: 'Voir la vidéo',
+                fields: { fullName: 'Nom complet', fullNamePlaceholder: 'ex. Youssef El Idrissi', phone: 'Numéro de téléphone', phonePlaceholder: '06XXXXXXXX ou +2126XXXXXXXX', phoneHelper: 'Veuillez entrer un numéro marocain actif pour recevoir les détails du rendez-vous', agencyName: 'Nom de l’agence immobilière', agencyNamePlaceholder: 'ex. Atlas Prestige Immobilier', city: 'Ville', cityPlaceholder: 'Choisissez votre ville', dailyLeads: 'Nombre de prospects par jour', dailyLeadsPlaceholder: 'Choisissez une tranche', agencyStaff: 'Nombre de personnes dans l’agence', agencyStaffPlaceholder: 'Choisissez une tranche' },
                 dailyLeadsOptions: [{ value: '1_50', label: 'De 1 à 50' }, { value: '50_100', label: 'De 50 à 100' }, { value: '100_300', label: 'De 100 à 300' }, { value: 'more_300', label: 'Plus de 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 à 3' }, { value: '4_10', label: '4 à 10' }, { value: '11_25', label: '11 à 25' }, { value: 'more_25', label: 'Plus de 25' }],
-                moroccanCities: ['Casablanca', 'Rabat', 'Marrakech', 'Tanger', 'Agadir', 'Fès', 'Meknès', 'Autre ville au Maroc'],
-                reassurance: 'Vos données sont strictement confidentielles et utilisées uniquement pour préparer votre consultation.', submitStep1: 'Continuer pour choisir la date de consultation', step2Heading: 'Sélectionnez le créneau qui vous convient le mieux', editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation gratuite', confirmationTitle: 'Votre consultation est confirmée avec succès !', confirmationDesc: (n, a) => `Merci ${n}. Votre rendez-vous pour l'agence ${a} est enregistré. Le lien d'accès vous sera envoyé.`, bookAnother: 'Réserver pour une autre agence'
+                moroccanCities: [
+                  'Casablanca', 'Rabat', 'Marrakech', 'Fès', 'Tanger', 'Agadir', 'Meknès', 'Oujda', 'Kénitra', 'Tétouan',
+                  'Salé', 'Mohammédia', 'Témara', 'El Jadida', 'Nador', 'Settat', 'Khouribga', 'Béni Mellal', 'Safi', 'Larache',
+                  'Ksar El Kebir', 'Berrechid', 'Taza', 'Essaouira', 'Khémisset', 'Errachidia', 'Ouarzazate', 'Guelmim', 'Dakhla', 'Laâyoune',
+                  'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
+                  'Chefchaouen', 'Al Hoceïma', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Autre ville au Maroc'
+                ],
+                reassurance: 'Vos données sont strictement confidentielles et utilisées uniquement pour préparer votre consultation.', submitStep1: 'Continuer pour choisir la date de consultation', step2Heading: 'Sélectionnez le créneau qui vous convient le mieux', editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation gratuite', confirmationTitle: 'Votre consultation est confirmée avec succès !', confirmationDesc: (n, a) => `Merci ${n}. Votre rendez-vous pour l’agence ${a} est enregistré. Le lien d’accès vous sera envoyé.`, bookAnother: 'Réserver pour une autre agence'
               },
               faq: {
-                kicker: 'Foire Aux Questions', title: 'Des réponses claires et précises à vos questions', subtitle: 'Les points essentiels concernant la sécurité de vos données, la mise en service et la consultation.',
+                kicker: 'Foire Aux Questions', title: 'Des réponses claires et précises à vos questions', subtitle: 'Les points essentiels concernant la sécurité de vos données, la migration et la consultation.',
                 items: [
                   { q: 'Mes données sont-elles sécurisées ?', a: 'Oui, l’ensemble de vos données est chiffré et protégé conformément aux exigences de la CNDP au Maroc.' },
                   { q: 'Puis-je migrer depuis Excel ou des carnets papier ?', a: 'Absolument, nous vous accompagnons pour transférer l’intégralité de vos contacts sans aucune perte.' },
