@@ -374,7 +374,7 @@
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.city + ' *'"></label>
                     <select x-model="form.city" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                       <option value="" disabled x-text="t().booking.fields.cityPlaceholder"></option>
-                      <template x-for="c in t().booking.moroccanCities" :key="c"><option :value="c" x-text="c"></option></template>
+                      <template x-for="(c, i) in t().booking.moroccanCities" :key="i"><option :value="i" x-text="c"></option></template>
                     </select>
                   </div>
 
@@ -425,7 +425,12 @@
                   <p class="text-xs font-semibold text-slate-300 mb-3" x-text="t().booking.selectDate"></p>
                   <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
                     <template x-for="d in dates" :key="d.value">
-                      <button type="button" @click="selectDate(d.value)" :class="selectedDate === d.value ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-600'" class="p-3 rounded-xl border text-center transition cursor-pointer text-xs font-semibold" x-text="dateLabel(d.date)"></button>
+                      <button type="button" @click="selectDate(d.value)"
+                        :class="selectedDate === d.value
+                          ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-600/30'
+                          : 'bg-white text-slate-900 border-slate-300 hover:border-blue-400 hover:bg-slate-50'"
+                        class="p-3 rounded-xl border text-center transition cursor-pointer text-xs font-semibold"
+                        x-text="dateLabel(d.date)"></button>
                     </template>
                   </div>
                 </div>
@@ -436,16 +441,23 @@
                   <p x-show="!loadingSlots && slots.length === 0" class="text-xs text-amber-400" x-text="t().booking.noSlots"></p>
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" x-show="!loadingSlots && slots.length > 0">
                     <template x-for="time in slots" :key="time">
-                      <button type="button" @click="selectedTime = time" :class="selectedTime === time ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300'" class="p-3 rounded-xl border text-center transition cursor-pointer font-latin" x-text="time"></button>
+                      <button type="button" @click="selectedTime = time"
+                        :class="selectedTime === time
+                          ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-600/30'
+                          : 'bg-white text-slate-900 border-slate-300 hover:border-blue-400 hover:bg-slate-50'"
+                        class="p-3 rounded-xl border text-center transition cursor-pointer font-latin font-semibold"
+                        x-text="time"></button>
                     </template>
                   </div>
                 </div>
 
                 <p x-show="errorMsg" class="text-xs text-rose-400" x-text="errorMsg"></p>
 
-                <div class="pt-4 flex justify-between items-center">
+                <div class="pt-4 flex justify-between items-center gap-4">
                   <button type="button" @click="step = 1" class="text-xs text-slate-400 hover:underline" x-text="t().booking.editData"></button>
-                  <button type="button" @click="confirmBooking()" :disabled="!selectedTime || submitting" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-bold rounded-xl transition cursor-pointer" x-text="submitting ? t().booking.submitting : t().booking.confirmAppointment"></button>
+                  <button type="button" @click="confirmBooking()" :disabled="!selectedTime || submitting"
+                    class="px-5 py-2.5 text-sm bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-bold rounded-lg transition cursor-pointer"
+                    x-text="submitting ? t().booking.submitting : t().booking.confirmAppointment"></button>
                 </div>
               </div>
             </template>
@@ -616,12 +628,12 @@
         // ---------- الحجز ----------
         buildDates() {
           const list = [];
-          let i = 0; // يبدأ من اليوم
+          let i = 0;
           while (list.length < 10) {
             const d = new Date();
             d.setDate(d.getDate() + i);
             i++;
-            if (d.getDay() === 0) continue; // بدون الأحد
+            if (d.getDay() === 0) continue;
             list.push({ value: this.fmtDate(d), date: d });
           }
           this.dates = list;
@@ -636,10 +648,6 @@
           const loc = this.lang === 'ar' ? 'ar-MA' : this.lang === 'fr' ? 'fr-FR' : 'en-GB';
           const base = new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
           return this.fmtDate(d) === this.fmtDate(new Date()) ? this.t().booking.today + ' · ' + base : base;
-        },
-        labelOf(options, value) {
-          const o = options.find(x => x.value === value);
-          return o ? o.label : value;
         },
         isValidPhone(p) {
           const clean = p.replace(/[\s-]/g, '');
@@ -667,60 +675,89 @@
           this.loadSlots();
         },
 
-        loadSlots() {
+        async parseResponse(res) {
+          const text = await res.text();
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            console.error('Apps Script returned non-JSON response:', text.slice(0, 300));
+            throw new Error('BAD_RESPONSE');
+          }
+        },
+
+        async loadSlots() {
           this.errorMsg = '';
           this.loadingSlots = true;
           this.slots = [];
-
-          fetch(`${SCRIPT_URL}?action=slots&date=${this.selectedDate}`)
-            .then(r => r.json())
-            .then(j => {
-              if (j.ok) this.slots = j.slots;
-              else this.errorMsg = this.t().booking.genericError;
-            })
-            .catch(() => { this.errorMsg = this.t().booking.genericError; })
-            .finally(() => { this.loadingSlots = false; });
+          try {
+            const res = await fetch(`${SCRIPT_URL}?action=slots&date=${this.selectedDate}`);
+            const j = await this.parseResponse(res);
+            if (j.ok) this.slots = j.slots;
+            else {
+              console.error('slots error:', j.error);
+              this.errorMsg = this.t().booking.genericError;
+            }
+          } catch (err) {
+            console.error('loadSlots failed:', err);
+            this.errorMsg = this.t().booking.connectionError;
+          } finally {
+            this.loadingSlots = false;
+          }
         },
 
-        confirmBooking() {
+        // بيانات الحجز تُرسل دائماً بالفرنسية، بغض النظر عن لغة الصفحة
+        buildPayload() {
+          const fr = this.t('fr').booking;
+          const pick = (list, value) => (list.find(o => o.value === value) || {}).label || '';
+          const role = this.form.role === 'other'
+            ? 'Autre : ' + this.form.roleOther.trim()
+            : pick(fr.roles, this.form.role);
+          return {
+            fullName: this.form.fullName.trim(),
+            phone: this.form.phone.trim(),
+            email: this.form.email.trim(),
+            agencyName: this.form.agencyName.trim(),
+            city: fr.moroccanCities[Number(this.form.city)] || '',
+            role,
+            agencyStaff: pick(fr.agencyStaffOptions, this.form.agencyStaff),
+            dailyLeads: pick(fr.dailyLeadsOptions, this.form.dailyLeads),
+            date: this.selectedDate,
+            time: this.selectedTime
+          };
+        },
+
+        async confirmBooking() {
           if (!this.selectedTime) return;
           this.submitting = true;
           this.errorMsg = '';
 
-          const payload = {
-            fullName: this.form.fullName,
-            phone: this.form.phone,
-            email: this.form.email,
-            agencyName: this.form.agencyName,
-            city: this.form.city,
-            role: this.labelOf(this.t().booking.roles, this.form.role),
-            roleOther: this.form.role === 'other' ? this.form.roleOther : '',
-            dailyLeads: this.labelOf(this.t().booking.dailyLeadsOptions, this.form.dailyLeads),
-            agencyStaff: this.labelOf(this.t().booking.agencyStaffOptions, this.form.agencyStaff),
-            date: this.selectedDate,
-            time: this.selectedTime
-          };
+          const payload = this.buildPayload();
 
-          fetch(SCRIPT_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-          })
-            .then(r => r.json())
-            .then(j => {
-              if (j.ok) {
-                this.step = 3;
-                if (window.confetti) confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-              } else if (j.error === 'SLOT_TAKEN') {
-                this.errorMsg = this.t().booking.slotTaken;
-                this.selectedTime = '';
-                this.loadSlots();
-              } else {
-                this.errorMsg = this.t().booking.genericError;
-              }
-            })
-            .catch(() => { this.errorMsg = this.t().booking.genericError; })
-            .finally(() => { this.submitting = false; });
+          try {
+            const res = await fetch(SCRIPT_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify(payload)
+            });
+            const j = await this.parseResponse(res);
+
+            if (j.ok) {
+              this.step = 3;
+              if (window.confetti) confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+            } else if (j.error === 'SLOT_TAKEN') {
+              this.errorMsg = this.t().booking.slotTaken;
+              this.selectedTime = '';
+              this.loadSlots();
+            } else {
+              console.error('booking error:', j.error);
+              this.errorMsg = this.t().booking.genericError;
+            }
+          } catch (err) {
+            console.error('confirmBooking failed:', err);
+            this.errorMsg = this.t().booking.connectionError;
+          } finally {
+            this.submitting = false;
+          }
         },
 
         resetBooking() {
@@ -764,7 +801,7 @@
         },
 
         // ---------- الترجمات ----------
-        t() {
+        t(l = this.lang) {
           const dict = {
             ar: {
               nav: { capabilities: 'المميزات', benefits: 'الفوائد', calculator: 'حاسبة الخسائر', comparison: 'مقارنة المنظومة', faq: 'الأسئلة الشائعة' },
@@ -862,10 +899,12 @@
                 step2Heading: 'حدد موعد الاستشارة الأنسب لك',
                 selectDate: 'اختر يوم الاستشارة', selectTime: 'اختر الساعة', today: 'اليوم',
                 loadingSlots: 'جاري تحميل المواعيد المتاحة...', noSlots: 'لا توجد مواعيد متاحة في هذا اليوم، اختر يوماً آخر.',
-                slotTaken: 'هذا الموعد تم حجزه للتو، اختر موعداً آخر.', genericError: 'وقع خطأ أثناء العملية، حاول مرة أخرى.',
+                slotTaken: 'هذا الموعد تم حجزه للتو، اختر موعداً آخر.',
+                genericError: 'وقع خطأ من الخادم، تأكد من إعدادات Apps Script ثم حاول مرة أخرى.',
+                connectionError: 'تعذر الاتصال بالخادم. تأكد من الإنترنت أو من نشر Apps Script بصلاحية Anyone.',
                 submitting: 'جاري الحجز...', phoneInvalid: 'أدخل رقماً مغربياً صحيحاً (06 أو 07 أو 05 أو +212)',
                 emailInvalid: 'أدخل بريداً إلكترونياً صحيحاً',
-                editData: 'تعديل البيانات', confirmAppointment: 'تأكيد حجز الاستشارة المجانية',
+                editData: 'تعديل البيانات', confirmAppointment: 'تأكيد حجز الاستشارة',
                 confirmationTitle: 'تم تأكيد حجز موعد الاستشارة بنجاح!',
                 confirmationDesc: (n, a) => `شكراً لك يا ${n}. تم تثبيت الموعد المخصص لوكالة ${a}. سنرسل لك رابط اللقاء وتفاصيل الاستشارة.`,
                 bookAnother: 'حجز استشارة لوكالة أخرى'
@@ -970,17 +1009,19 @@
                   'Salé', 'Mohammedia', 'Témara', 'El Jadida', 'Nador', 'Settat', 'Khouribga', 'Beni Mellal', 'Safi', 'Larache',
                   'Ksar El Kebir', 'Berrechid', 'Taza', 'Essaouira', 'Khemisset', 'Errachidia', 'Ouarzazate', 'Guelmim', 'Dakhla', 'Laayoune',
                   'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
-                  'Chefchaouen', 'Al Hoceima', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Other Moroccan city'
+                  'Chefchaouen', 'Al Hoceima', 'Ouezzane', 'Sefrou', 'Azemmour', 'Figuig', 'Tiznit', 'Berkane', 'Other Moroccan city'
                 ],
                 reassurance: 'Your information is confidential and used exclusively to arrange your consultation.',
                 submitStep1: 'Continue to Select Consultation Date',
                 step2Heading: 'Select your preferred consultation time',
                 selectDate: 'Choose a consultation day', selectTime: 'Choose a time', today: 'Today',
                 loadingSlots: 'Loading available slots...', noSlots: 'No slots available on this day, please choose another day.',
-                slotTaken: 'This slot was just booked, please choose another one.', genericError: 'Something went wrong, please try again.',
+                slotTaken: 'This slot was just booked, please choose another one.',
+                genericError: 'Server error. Check the Apps Script settings, then try again.',
+                connectionError: 'Could not reach the server. Check your internet or the Apps Script deployment (Anyone access).',
                 submitting: 'Booking...', phoneInvalid: 'Enter a valid Moroccan phone number (06, 07, 05 or +212)',
                 emailInvalid: 'Enter a valid email address',
-                editData: 'Edit Details', confirmAppointment: 'Confirm Free Consultation Booking',
+                editData: 'Edit Details', confirmAppointment: 'Confirm Consultation',
                 confirmationTitle: 'Consultation Successfully Confirmed!',
                 confirmationDesc: (n, a) => `Thank you ${n}. Your consultation for ${a} has been reserved. The access link will be sent to you.`,
                 bookAnother: 'Book consultation for another agency'
@@ -1085,17 +1126,19 @@
                   'Salé', 'Mohammédia', 'Témara', 'El Jadida', 'Nador', 'Settat', 'Khouribga', 'Béni Mellal', 'Safi', 'Larache',
                   'Ksar El Kebir', 'Berrechid', 'Taza', 'Essaouira', 'Khémisset', 'Errachidia', 'Ouarzazate', 'Guelmim', 'Dakhla', 'Laâyoune',
                   'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
-                  'Chefchaouen', 'Al Hoceïma', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Autre ville au Maroc'
+                  'Chefchaouen', 'Al Hoceïma', 'Ouezzane', 'Sefrou', 'Azemmour', 'Figuig', 'Tiznit', 'Berkane', 'Autre ville au Maroc'
                 ],
                 reassurance: 'Vos données sont strictement confidentielles et utilisées uniquement pour préparer votre consultation.',
                 submitStep1: 'Continuer pour choisir la date de consultation',
                 step2Heading: 'Sélectionnez le créneau qui vous convient le mieux',
                 selectDate: 'Choisissez le jour de la consultation', selectTime: 'Choisissez l’heure', today: 'Aujourd’hui',
                 loadingSlots: 'Chargement des créneaux disponibles...', noSlots: 'Aucun créneau disponible ce jour-là, veuillez choisir une autre date.',
-                slotTaken: 'Ce créneau vient d’être réservé, veuillez en choisir un autre.', genericError: 'Une erreur est survenue, veuillez réessayer.',
+                slotTaken: 'Ce créneau vient d’être réservé, veuillez en choisir un autre.',
+                genericError: 'Erreur côté serveur. Vérifiez les paramètres Apps Script puis réessayez.',
+                connectionError: 'Impossible de joindre le serveur. Vérifiez la connexion ou le déploiement Apps Script (accès Anyone).',
                 submitting: 'Réservation en cours...', phoneInvalid: 'Entrez un numéro marocain valide (06, 07, 05 ou +212)',
                 emailInvalid: 'Entrez une adresse e-mail valide',
-                editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation gratuite',
+                editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation',
                 confirmationTitle: 'Votre consultation est confirmée avec succès !',
                 confirmationDesc: (n, a) => `Merci ${n}. Votre rendez-vous pour l’agence ${a} est enregistré. Le lien d’accès vous sera envoyé.`,
                 bookAnother: 'Réserver pour une autre agence'
@@ -1111,7 +1154,7 @@
               footer: { desc: 'Le système intelligent dédié aux agences immobilières au Maroc.', tagline: 'Système intelligent de gestion d’agences immobilières · Casablanca, Maroc', allRightsReserved: 'Tous droits réservés', privacyLink: 'Politique de Confidentialité & Données', termsLink: 'Conditions Générales', timezone: 'Heure de Casablanca (GMT+1)' }
             }
           };
-          return dict[this.lang] || dict.ar;
+          return dict[l] || dict.ar;
         }
       }
     }
