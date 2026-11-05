@@ -21,9 +21,7 @@
       color: #f1f5f9;
       scroll-behavior: smooth;
     }
-    body.font-latin-body {
-      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
+    body.font-latin-body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .font-latin { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .hero-glow {
       background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.18) 0%, rgba(30, 58, 138, 0.08) 45%, transparent 75%);
@@ -41,19 +39,19 @@
 
 <body x-data="ibondaApp()" x-init="init()" :class="lang === 'ar' ? '' : 'font-latin-body'" class="min-h-screen selection:bg-blue-600 selection:text-white">
 
-  <!-- 1. الهايدر: اسم الوكالة + محول اللغات فقط -->
-  <header class="sticky top-0 z-50 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+  <!-- 1. الهايدر (أبيض): اسم الوكالة + محول اللغات -->
+  <header class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
-      <a href="#" class="font-latin text-2xl font-black tracking-tight text-white flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block shadow-sm shadow-blue-500/50"></span>
+      <a href="#" class="font-latin text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-sm bg-blue-600 inline-block"></span>
         <span>IBONDA</span>
       </a>
 
-      <div class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
-        <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition">العربية</button>
-        <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">EN</button>
-        <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">FR</button>
+      <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1 text-xs">
+        <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition">العربية</button>
+        <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition font-latin">EN</button>
+        <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition font-latin">FR</button>
       </div>
 
     </div>
@@ -125,9 +123,8 @@
               </div>
             </template>
 
-            <!-- عناصر التحكم: شريط تقدم أحادي الاتجاه + زر تشغيل + صوت + ملء الشاشة -->
+            <!-- عناصر التحكم -->
             <div class="absolute bottom-0 inset-x-0 z-30 p-3 sm:p-4 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent">
-              <!-- pointer-events-none: لا يمكن سحب الشريط، يتحرك مع التشغيل فقط -->
               <input type="range" min="0" :max="duration" step="0.1" :value="currentTime" tabindex="-1" aria-hidden="true" class="w-full h-1.5 bg-slate-700/80 rounded appearance-none accent-blue-500 mb-2 pointer-events-none">
 
               <div class="flex items-center justify-between text-xs text-white">
@@ -279,7 +276,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <!-- البطاقة التقليدية (أحمر) -->
           <div class="rounded-2xl border-2 border-rose-300 bg-rose-50/20 p-6 sm:p-8 flex flex-col justify-between relative">
             <div class="absolute top-0 end-8 -translate-y-1/2 bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-full" x-text="t().comparison.traditionalBadge"></div>
             <div>
@@ -302,7 +298,6 @@
             <div class="mt-8 pt-6 border-t border-rose-200 text-xs font-semibold text-rose-600" x-text="t().comparison.traditionalFooter"></div>
           </div>
 
-          <!-- بطاقة IBONDA (أخضر) -->
           <div class="rounded-2xl border-2 border-emerald-500/50 bg-emerald-50/25 p-6 sm:p-8 flex flex-col justify-between relative shadow-lg shadow-emerald-500/5">
             <div class="absolute top-0 end-8 -translate-y-1/2 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full" x-text="t().comparison.ibondaBadge"></div>
             <div>
@@ -328,7 +323,7 @@
       </div>
     </section>
 
-    <!-- 7. الحجز (مقفل حتى نهاية الفيديو) -->
+    <!-- 7. الحجز -->
     <section id="booking" class="py-24 bg-slate-950 text-slate-100">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-10">
@@ -347,7 +342,7 @@
         <template x-if="videoCompleted">
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl">
 
-            <!-- الخطوة 1 -->
+            <!-- الخطوة 1: البيانات -->
             <template x-if="step === 1">
               <form @submit.prevent="submitStep1()" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-start">
@@ -361,6 +356,13 @@
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.phone + ' *'"></label>
                     <input type="tel" dir="ltr" x-model="form.phone" required :placeholder="t().booking.fields.phonePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
                     <p class="text-[10px] text-slate-500 mt-1" x-text="t().booking.fields.phoneHelper"></p>
+                    <p class="text-[11px] text-rose-400 mt-1" x-show="phoneError" x-text="phoneError"></p>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.email + ' *'"></label>
+                    <input type="email" dir="ltr" x-model="form.email" required :placeholder="t().booking.fields.emailPlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
+                    <p class="text-[11px] text-rose-400 mt-1" x-show="emailError" x-text="emailError"></p>
                   </div>
 
                   <div>
@@ -374,6 +376,19 @@
                       <option value="" disabled x-text="t().booking.fields.cityPlaceholder"></option>
                       <template x-for="c in t().booking.moroccanCities" :key="c"><option :value="c" x-text="c"></option></template>
                     </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.role + ' *'"></label>
+                    <select x-model="form.role" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
+                      <option value="" disabled x-text="t().booking.fields.rolePlaceholder"></option>
+                      <template x-for="r in t().booking.roles" :key="r.value"><option :value="r.value" x-text="r.label"></option></template>
+                    </select>
+                  </div>
+
+                  <div x-show="form.role === 'other'">
+                    <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.roleOther + ' *'"></label>
+                    <input type="text" x-model="form.roleOther" :required="form.role === 'other'" :placeholder="t().booking.fields.roleOtherPlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                   </div>
 
                   <div>
@@ -401,29 +416,47 @@
               </form>
             </template>
 
-            <!-- الخطوة 2 -->
+            <!-- الخطوة 2: اختيار اليوم والساعة -->
             <template x-if="step === 2">
               <div class="space-y-6 text-start">
                 <h3 class="text-lg font-bold text-white" x-text="t().booking.step2Heading"></h3>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <template x-for="time in ['10:00', '11:00', '12:00', '14:30', '15:30', '16:30', '17:00']" :key="time">
-                    <button type="button" @click="selectedTime = time" :class="selectedTime === time ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300'" class="p-3 rounded-xl border text-center transition cursor-pointer font-latin" x-text="time"></button>
-                  </template>
+
+                <div>
+                  <p class="text-xs font-semibold text-slate-300 mb-3" x-text="t().booking.selectDate"></p>
+                  <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                    <template x-for="d in dates" :key="d.value">
+                      <button type="button" @click="selectDate(d.value)" :class="selectedDate === d.value ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-600'" class="p-3 rounded-xl border text-center transition cursor-pointer text-xs font-semibold" x-text="dateLabel(d.date)"></button>
+                    </template>
+                  </div>
                 </div>
+
+                <div x-show="selectedDate">
+                  <p class="text-xs font-semibold text-slate-300 mb-3" x-text="t().booking.selectTime"></p>
+                  <p x-show="loadingSlots" class="text-xs text-slate-400" x-text="t().booking.loadingSlots"></p>
+                  <p x-show="!loadingSlots && slots.length === 0" class="text-xs text-amber-400" x-text="t().booking.noSlots"></p>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" x-show="!loadingSlots && slots.length > 0">
+                    <template x-for="time in slots" :key="time">
+                      <button type="button" @click="selectedTime = time" :class="selectedTime === time ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-950 border-slate-800 text-slate-300'" class="p-3 rounded-xl border text-center transition cursor-pointer font-latin" x-text="time"></button>
+                    </template>
+                  </div>
+                </div>
+
+                <p x-show="errorMsg" class="text-xs text-rose-400" x-text="errorMsg"></p>
+
                 <div class="pt-4 flex justify-between items-center">
-                  <button @click="step = 1" class="text-xs text-slate-400 hover:underline" x-text="t().booking.editData"></button>
-                  <button @click="confirmBooking()" :disabled="!selectedTime" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-bold rounded-xl transition cursor-pointer" x-text="t().booking.confirmAppointment"></button>
+                  <button type="button" @click="step = 1" class="text-xs text-slate-400 hover:underline" x-text="t().booking.editData"></button>
+                  <button type="button" @click="confirmBooking()" :disabled="!selectedTime || submitting" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white font-bold rounded-xl transition cursor-pointer" x-text="submitting ? t().booking.submitting : t().booking.confirmAppointment"></button>
                 </div>
               </div>
             </template>
 
-            <!-- الخطوة 3 -->
+            <!-- الخطوة 3: التأكيد -->
             <template x-if="step === 3">
               <div class="text-center py-6">
                 <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
                 <h3 class="text-2xl font-bold text-white mb-2" x-text="t().booking.confirmationTitle"></h3>
                 <p class="text-sm text-slate-300 max-w-md mx-auto mb-6" x-text="t().booking.confirmationDesc(form.fullName, form.agencyName)"></p>
-                <button @click="step = 1" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer" x-text="t().booking.bookAnother"></button>
+                <button @click="resetBooking()" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold cursor-pointer" x-text="t().booking.bookAnother"></button>
               </div>
             </template>
 
@@ -491,6 +524,9 @@
 
   <!-- 10. المنطق والترجمات -->
   <script>
+    // رابط Google Apps Script (Web app)
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSIbGfP9d41Ugn7QdnHduy4SYD2i6YMDu2RQYRwaSoeJ5i5If1Hq_j20v0323-BEU/exec';
+
     function ibondaApp() {
       return {
         lang: 'ar',
@@ -499,18 +535,30 @@
         hasStarted: false,
         muted: false,
         currentTime: 0,
-        duration: 275,          // المدة بالثواني (4:35) - تُستخدم داخلياً فقط
-        fastSeconds: 20,        // أول 20 ثانية بسرعة 1.5
+        duration: 275,
+        fastSeconds: 20,
         timer: null,
+
         step: 1,
+        dates: [],
+        selectedDate: '',
+        slots: [],
         selectedTime: '',
+        loadingSlots: false,
+        submitting: false,
+        errorMsg: '',
+        phoneError: '',
+        emailError: '',
+
         leadsLost: 10,
         avgCommission: 5000,
         closingRate: 10,
-        form: { fullName: '', phone: '', agencyName: '', city: '', dailyLeads: '', agencyStaff: '' },
+
+        form: { fullName: '', phone: '', email: '', agencyName: '', city: '', role: '', roleOther: '', dailyLeads: '', agencyStaff: '' },
 
         init() {
           this.setLang('ar');
+          this.buildDates();
         },
 
         setLang(l) {
@@ -519,119 +567,203 @@
           document.documentElement.lang = l;
         },
 
-        // تشغيل المؤقت المحاكي - استبدله بـ video.play() و video.playbackRate عند ربط الفيديو الحقيقي
+        // ---------- الفيديو ----------
         startTimer() {
           if (this.timer) return;
           this.timer = setInterval(() => {
             const rate = this.currentTime < this.fastSeconds ? 1.5 : 1.0;
             this.currentTime = Math.min(this.duration, this.currentTime + 0.1 * rate);
-            if (this.currentTime >= this.duration) {
-              this.finishVideo();
-            }
+            if (this.currentTime >= this.duration) this.finishVideo();
           }, 100);
         },
-
         pauseTimer() {
           clearInterval(this.timer);
           this.timer = null;
         },
-
         finishVideo() {
           this.pauseTimer();
           this.isPlaying = false;
           this.videoCompleted = true;
         },
-
         togglePlay() {
           this.hasStarted = true;
           this.isPlaying = !this.isPlaying;
-          if (this.isPlaying) {
-            this.startTimer();
-          } else {
-            this.pauseTimer();
-          }
+          this.isPlaying ? this.startTimer() : this.pauseTimer();
         },
-
-        toggleMute() {
-          this.muted = !this.muted;
-        },
-
+        toggleMute() { this.muted = !this.muted; },
         toggleFullscreen() {
           const el = document.getElementById('vsl-section');
-          if (!document.fullscreenElement) {
-            el.requestFullscreen && el.requestFullscreen();
-          } else {
-            document.exitFullscreen && document.exitFullscreen();
-          }
+          if (!document.fullscreenElement) el.requestFullscreen && el.requestFullscreen();
+          else document.exitFullscreen && document.exitFullscreen();
         },
-
-        handleCtaClick() {
-          if (!this.videoCompleted) {
-            this.scrollToVideo();
-          } else {
-            this.scrollToBooking();
-          }
-        },
-
-        scrollToVideo() {
-          document.getElementById('vsl-section').scrollIntoView({ behavior: 'smooth' });
-        },
-
-        scrollToBooking() {
-          document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-        },
-
-        submitStep1() {
-          this.step = 2;
-        },
-
-        confirmBooking() {
-          this.step = 3;
-          if (window.confetti) {
-            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-          }
-        },
-
-        calcDeals() {
-          return Math.round(this.leadsLost * (this.closingRate / 100) * 10) / 10;
-        },
-
-        calcMonthlyLoss() {
-          return Math.round(this.calcDeals() * this.avgCommission);
-        },
-
-        calcYearlyLoss() {
-          return this.calcMonthlyLoss() * 12;
-        },
-
-        getDangerLevel() {
-          const l = this.calcMonthlyLoss();
-          if (l < 10000) return 'low';
-          if (l <= 50000) return 'mid';
-          return 'high';
-        },
-
-        dangerClasses() {
-          const level = this.getDangerLevel();
-          if (level === 'low') return 'border-emerald-500 bg-emerald-500/10 text-emerald-400';
-          if (level === 'mid') return 'border-amber-500 bg-amber-500/10 text-amber-400';
-          return 'border-rose-500 bg-rose-500/10 text-rose-400';
-        },
-
-        getDangerLabel() {
-          return this.t().calculator.dangerLabels[this.getDangerLevel()];
-        },
-
-        getDangerMsg() {
-          return this.t().calculator.dangerMsgs[this.getDangerLevel()];
-        },
-
         getCurrentSlide() {
           const slides = this.t().hero.vslSlides;
           const idx = Math.min(3, Math.floor((this.currentTime / this.duration) * 4));
           return slides[idx] || slides[0];
         },
 
+        // ---------- التنقل ----------
+        handleCtaClick() {
+          this.videoCompleted ? this.scrollToBooking() : this.scrollToVideo();
+        },
+        scrollToVideo() {
+          document.getElementById('vsl-section').scrollIntoView({ behavior: 'smooth' });
+        },
+        scrollToBooking() {
+          document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+        },
+
+        // ---------- الحجز ----------
+        buildDates() {
+          const list = [];
+          let i = 0; // يبدأ من اليوم
+          while (list.length < 10) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            i++;
+            if (d.getDay() === 0) continue; // بدون الأحد
+            list.push({ value: this.fmtDate(d), date: d });
+          }
+          this.dates = list;
+        },
+        fmtDate(d) {
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        },
+        dateLabel(d) {
+          const loc = this.lang === 'ar' ? 'ar-MA' : this.lang === 'fr' ? 'fr-FR' : 'en-GB';
+          const base = new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+          return this.fmtDate(d) === this.fmtDate(new Date()) ? this.t().booking.today + ' · ' + base : base;
+        },
+        labelOf(options, value) {
+          const o = options.find(x => x.value === value);
+          return o ? o.label : value;
+        },
+        isValidPhone(p) {
+          const clean = p.replace(/[\s-]/g, '');
+          return /^(0[5-7]\d{8}|\+2126\d{8})$/.test(clean);
+        },
+        isValidEmail(e) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+        },
+
+        submitStep1() {
+          this.phoneError = this.isValidPhone(this.form.phone) ? '' : this.t().booking.phoneInvalid;
+          this.emailError = this.isValidEmail(this.form.email) ? '' : this.t().booking.emailInvalid;
+          if (this.phoneError || this.emailError) return;
+
+          this.errorMsg = '';
+          this.selectedDate = '';
+          this.selectedTime = '';
+          this.slots = [];
+          this.step = 2;
+        },
+
+        selectDate(value) {
+          this.selectedDate = value;
+          this.selectedTime = '';
+          this.loadSlots();
+        },
+
+        loadSlots() {
+          this.errorMsg = '';
+          this.loadingSlots = true;
+          this.slots = [];
+
+          fetch(`${SCRIPT_URL}?action=slots&date=${this.selectedDate}`)
+            .then(r => r.json())
+            .then(j => {
+              if (j.ok) this.slots = j.slots;
+              else this.errorMsg = this.t().booking.genericError;
+            })
+            .catch(() => { this.errorMsg = this.t().booking.genericError; })
+            .finally(() => { this.loadingSlots = false; });
+        },
+
+        confirmBooking() {
+          if (!this.selectedTime) return;
+          this.submitting = true;
+          this.errorMsg = '';
+
+          const payload = {
+            fullName: this.form.fullName,
+            phone: this.form.phone,
+            email: this.form.email,
+            agencyName: this.form.agencyName,
+            city: this.form.city,
+            role: this.labelOf(this.t().booking.roles, this.form.role),
+            roleOther: this.form.role === 'other' ? this.form.roleOther : '',
+            dailyLeads: this.labelOf(this.t().booking.dailyLeadsOptions, this.form.dailyLeads),
+            agencyStaff: this.labelOf(this.t().booking.agencyStaffOptions, this.form.agencyStaff),
+            date: this.selectedDate,
+            time: this.selectedTime
+          };
+
+          fetch(SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          })
+            .then(r => r.json())
+            .then(j => {
+              if (j.ok) {
+                this.step = 3;
+                if (window.confetti) confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+              } else if (j.error === 'SLOT_TAKEN') {
+                this.errorMsg = this.t().booking.slotTaken;
+                this.selectedTime = '';
+                this.loadSlots();
+              } else {
+                this.errorMsg = this.t().booking.genericError;
+              }
+            })
+            .catch(() => { this.errorMsg = this.t().booking.genericError; })
+            .finally(() => { this.submitting = false; });
+        },
+
+        resetBooking() {
+          this.step = 1;
+          this.selectedDate = '';
+          this.selectedTime = '';
+          this.slots = [];
+          this.errorMsg = '';
+          this.phoneError = '';
+          this.emailError = '';
+          this.form = { fullName: '', phone: '', email: '', agencyName: '', city: '', role: '', roleOther: '', dailyLeads: '', agencyStaff: '' };
+        },
+
+        // ---------- الحاسبة ----------
+        calcDeals() {
+          return Math.round(this.leadsLost * (this.closingRate / 100) * 10) / 10;
+        },
+        calcMonthlyLoss() {
+          return Math.round(this.calcDeals() * this.avgCommission);
+        },
+        calcYearlyLoss() {
+          return this.calcMonthlyLoss() * 12;
+        },
+        getDangerLevel() {
+          const l = this.calcMonthlyLoss();
+          if (l < 10000) return 'low';
+          if (l <= 50000) return 'mid';
+          return 'high';
+        },
+        dangerClasses() {
+          const level = this.getDangerLevel();
+          if (level === 'low') return 'border-emerald-500 bg-emerald-500/10 text-emerald-400';
+          if (level === 'mid') return 'border-amber-500 bg-amber-500/10 text-amber-400';
+          return 'border-rose-500 bg-rose-500/10 text-rose-400';
+        },
+        getDangerLabel() {
+          return this.t().calculator.dangerLabels[this.getDangerLevel()];
+        },
+        getDangerMsg() {
+          return this.t().calculator.dangerMsgs[this.getDangerLevel()];
+        },
+
+        // ---------- الترجمات ----------
         t() {
           const dict = {
             ar: {
@@ -696,17 +828,47 @@
               },
               booking: {
                 title: 'احجز استشارة مجانية معنا', subtitle: 'استشارة مجانية 1 على 1 · 30 دقيقة عبر Google Meet · بدون أي التزام', lockedNotice: 'شاهد الفيديو كاملاً لتتمكن من حجز استشارتك المجانية', watchNow: 'شاهد الفيديو',
-                fields: { fullName: 'الاسم الكامل', fullNamePlaceholder: 'مثال: يوسف الإدريسي', phone: 'رقم الهاتف', phonePlaceholder: '06XXXXXXXX أو +2126XXXXXXXX', phoneHelper: 'يرجى إدخال رقم مغربي نشط لتلقي تفاصيل الموعد', agencyName: 'اسم الوكالة العقارية', agencyNamePlaceholder: 'مثال: أطلس للعقارات', city: 'المدينة', cityPlaceholder: 'اختر المدينة', dailyLeads: 'عدد العملاء المحتملين يومياً', dailyLeadsPlaceholder: 'اختر العدد', agencyStaff: 'عدد أفراد الوكالة', agencyStaffPlaceholder: 'اختر العدد' },
+                fields: {
+                  fullName: 'الاسم الكامل', fullNamePlaceholder: 'مثال: يوسف الإدريسي',
+                  phone: 'رقم الهاتف', phonePlaceholder: '06XXXXXXXX أو +2126XXXXXXXX', phoneHelper: 'يرجى إدخال رقم مغربي نشط لتلقي تفاصيل الموعد',
+                  email: 'البريد الإلكتروني', emailPlaceholder: 'name@agency.ma',
+                  agencyName: 'اسم الوكالة العقارية', agencyNamePlaceholder: 'مثال: أطلس للعقارات',
+                  city: 'المدينة', cityPlaceholder: 'اختر المدينة',
+                  role: 'دورك في الوكالة', rolePlaceholder: 'اختر دورك',
+                  roleOther: 'حدد دورك', roleOtherPlaceholder: 'مثال: مساعد المدير',
+                  dailyLeads: 'عدد العملاء المحتملين يومياً', dailyLeadsPlaceholder: 'اختر النطاق',
+                  agencyStaff: 'عدد أفراد الوكالة', agencyStaffPlaceholder: 'اختر النطاق'
+                },
+                roles: [
+                  { value: 'owner', label: 'مدير الوكالة' },
+                  { value: 'sales_manager', label: 'مدير المبيعات' },
+                  { value: 'advisor', label: 'مستشار عقاري' },
+                  { value: 'marketing', label: 'مسؤول التسويق' },
+                  { value: 'operations', label: 'مسؤول العمليات والإدارة' },
+                  { value: 'assistant', label: 'مساعد إداري' },
+                  { value: 'other', label: 'دور آخر' }
+                ],
                 dailyLeadsOptions: [{ value: '1_50', label: 'من 1 إلى 50' }, { value: '50_100', label: 'من 50 إلى 100' }, { value: '100_300', label: 'من 100 إلى 300' }, { value: 'more_300', label: 'أكثر من 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 إلى 3' }, { value: '4_10', label: '4 إلى 10' }, { value: '11_25', label: '11 إلى 25' }, { value: 'more_25', label: 'أكثر من 25' }],
                 moroccanCities: [
                   'الدار البيضاء', 'الرباط', 'مراكش', 'فاس', 'طنجة', 'أكادير', 'مكناس', 'وجدة', 'القنيطرة', 'تطوان',
                   'سلا', 'المحمدية', 'تمارة', 'الجديدة', 'الناظور', 'سطات', 'خريبكة', 'بني ملال', 'آسفي', 'العرائش',
                   'القصر الكبير', 'برشيد', 'تازة', 'الصويرة', 'الخميسات', 'الرشيدية', 'ورزازات', 'كلميم', 'الداخلة', 'العيون',
-                  'طان طان', 'إنزكان', 'تارودانت', 'إفران', 'أزرو', 'سيدي قاسم', 'سيدي سليمان', 'قلعة السراغنة', 'اليوسفية', 'بنguerir',
+                  'طان طان', 'إنزكان', 'تارودانت', 'إفران', 'أزرو', 'سيدي قاسم', 'سيدي سليمان', 'قلعة السراغنة', 'اليوسفية', 'بن جرير',
                   'شفشاون', 'الحسيمة', 'وزان', 'صفرو', 'أزمور', 'فكيك', 'تيزنيت', 'بركان', 'مدينة أخرى بالمغرب'
                 ],
-                reassurance: 'بياناتك سرية تماماً وتستخدم فقط لترتيب جلسة الاستشارة.', submitStep1: 'متابعة لاختيار موعد الاستشارة', step2Heading: 'حدد موعد الاستشارة الأنسب لك', editData: 'تعديل البيانات', confirmAppointment: 'تأكيد حجز الاستشارة المجانية', confirmationTitle: 'تم تأكيد حجز موعد الاستشارة بنجاح!', confirmationDesc: (n, a) => `شكراً لك يا ${n}. تم تثبيت الموعد المخصص لوكالة ${a}. سنرسل لك رابط اللقاء وتفاصيل الاستشارة.`, bookAnother: 'حجز استشارة لوكالة أخرى'
+                reassurance: 'بياناتك سرية تماماً وتستخدم فقط لترتيب جلسة الاستشارة.',
+                submitStep1: 'متابعة لاختيار موعد الاستشارة',
+                step2Heading: 'حدد موعد الاستشارة الأنسب لك',
+                selectDate: 'اختر يوم الاستشارة', selectTime: 'اختر الساعة', today: 'اليوم',
+                loadingSlots: 'جاري تحميل المواعيد المتاحة...', noSlots: 'لا توجد مواعيد متاحة في هذا اليوم، اختر يوماً آخر.',
+                slotTaken: 'هذا الموعد تم حجزه للتو، اختر موعداً آخر.', genericError: 'وقع خطأ أثناء العملية، حاول مرة أخرى.',
+                submitting: 'جاري الحجز...', phoneInvalid: 'أدخل رقماً مغربياً صحيحاً (06 أو 07 أو 05 أو +212)',
+                emailInvalid: 'أدخل بريداً إلكترونياً صحيحاً',
+                editData: 'تعديل البيانات', confirmAppointment: 'تأكيد حجز الاستشارة المجانية',
+                confirmationTitle: 'تم تأكيد حجز موعد الاستشارة بنجاح!',
+                confirmationDesc: (n, a) => `شكراً لك يا ${n}. تم تثبيت الموعد المخصص لوكالة ${a}. سنرسل لك رابط اللقاء وتفاصيل الاستشارة.`,
+                bookAnother: 'حجز استشارة لوكالة أخرى'
               },
               faq: {
                 kicker: 'الأسئلة الشائعة', title: 'إجابات واضحة ومباشرة لأهم تساؤلاتك', subtitle: 'إليك إجابات سريعة حول أمان البيانات والترحيل وطريقة عمل الاستشارة.',
@@ -781,7 +943,26 @@
               },
               booking: {
                 title: 'Book a free consultation with us', subtitle: 'Free 1-on-1 consultation · 30 minutes via Google Meet · No obligation', lockedNotice: 'Watch the full video to unlock your free consultation booking', watchNow: 'Watch the video',
-                fields: { fullName: 'Full name', fullNamePlaceholder: 'e.g., Youssef El Idrissi', phone: 'Phone number', phonePlaceholder: '06XXXXXXXX or +2126XXXXXXXX', phoneHelper: 'Please enter an active Moroccan phone number to receive appointment details', agencyName: 'Real estate agency name', agencyNamePlaceholder: 'e.g., Atlas Prestige Properties', city: 'City', cityPlaceholder: 'Select your city', dailyLeads: 'Daily new leads', dailyLeadsPlaceholder: 'Select a range', agencyStaff: 'Number of agency staff', agencyStaffPlaceholder: 'Select a range' },
+                fields: {
+                  fullName: 'Full name', fullNamePlaceholder: 'e.g., Youssef El Idrissi',
+                  phone: 'Phone number', phonePlaceholder: '06XXXXXXXX or +2126XXXXXXXX', phoneHelper: 'Please enter an active Moroccan phone number to receive appointment details',
+                  email: 'Email address', emailPlaceholder: 'name@agency.ma',
+                  agencyName: 'Real estate agency name', agencyNamePlaceholder: 'e.g., Atlas Prestige Properties',
+                  city: 'City', cityPlaceholder: 'Select your city',
+                  role: 'Your role in the agency', rolePlaceholder: 'Select your role',
+                  roleOther: 'Specify your role', roleOtherPlaceholder: 'e.g., Office coordinator',
+                  dailyLeads: 'Daily new leads', dailyLeadsPlaceholder: 'Select a range',
+                  agencyStaff: 'Number of agency staff', agencyStaffPlaceholder: 'Select a range'
+                },
+                roles: [
+                  { value: 'owner', label: 'Agency owner' },
+                  { value: 'sales_manager', label: 'Sales manager' },
+                  { value: 'advisor', label: 'Real estate advisor' },
+                  { value: 'marketing', label: 'Marketing manager' },
+                  { value: 'operations', label: 'Operations & admin manager' },
+                  { value: 'assistant', label: 'Administrative assistant' },
+                  { value: 'other', label: 'Other role' }
+                ],
                 dailyLeadsOptions: [{ value: '1_50', label: 'From 1 to 50' }, { value: '50_100', label: 'From 50 to 100' }, { value: '100_300', label: 'From 100 to 300' }, { value: 'more_300', label: 'More than 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 to 3' }, { value: '4_10', label: '4 to 10' }, { value: '11_25', label: '11 to 25' }, { value: 'more_25', label: 'More than 25' }],
                 moroccanCities: [
@@ -791,7 +972,18 @@
                   'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
                   'Chefchaouen', 'Al Hoceima', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Other Moroccan city'
                 ],
-                reassurance: 'Your information is confidential and used exclusively to arrange your consultation.', submitStep1: 'Continue to Select Consultation Date', step2Heading: 'Select your preferred consultation time', editData: 'Edit Details', confirmAppointment: 'Confirm Free Consultation Booking', confirmationTitle: 'Consultation Successfully Confirmed!', confirmationDesc: (n, a) => `Thank you ${n}. Your consultation for ${a} has been reserved. The access link will be sent to you.`, bookAnother: 'Book consultation for another agency'
+                reassurance: 'Your information is confidential and used exclusively to arrange your consultation.',
+                submitStep1: 'Continue to Select Consultation Date',
+                step2Heading: 'Select your preferred consultation time',
+                selectDate: 'Choose a consultation day', selectTime: 'Choose a time', today: 'Today',
+                loadingSlots: 'Loading available slots...', noSlots: 'No slots available on this day, please choose another day.',
+                slotTaken: 'This slot was just booked, please choose another one.', genericError: 'Something went wrong, please try again.',
+                submitting: 'Booking...', phoneInvalid: 'Enter a valid Moroccan phone number (06, 07, 05 or +212)',
+                emailInvalid: 'Enter a valid email address',
+                editData: 'Edit Details', confirmAppointment: 'Confirm Free Consultation Booking',
+                confirmationTitle: 'Consultation Successfully Confirmed!',
+                confirmationDesc: (n, a) => `Thank you ${n}. Your consultation for ${a} has been reserved. The access link will be sent to you.`,
+                bookAnother: 'Book consultation for another agency'
               },
               faq: {
                 kicker: 'Frequently Asked Questions', title: 'Clear, direct answers to common questions', subtitle: 'Key details regarding data security, migration, and the consultation process.',
@@ -866,7 +1058,26 @@
               },
               booking: {
                 title: 'Réservez une consultation gratuite avec nous', subtitle: 'Consultation gratuite 1-sur-1 · 30 minutes via Google Meet · Sans engagement', lockedNotice: 'Regardez la vidéo en entier pour réserver votre consultation gratuite', watchNow: 'Voir la vidéo',
-                fields: { fullName: 'Nom complet', fullNamePlaceholder: 'ex. Youssef El Idrissi', phone: 'Numéro de téléphone', phonePlaceholder: '06XXXXXXXX ou +2126XXXXXXXX', phoneHelper: 'Veuillez entrer un numéro marocain actif pour recevoir les détails du rendez-vous', agencyName: 'Nom de l’agence immobilière', agencyNamePlaceholder: 'ex. Atlas Prestige Immobilier', city: 'Ville', cityPlaceholder: 'Choisissez votre ville', dailyLeads: 'Nombre de prospects par jour', dailyLeadsPlaceholder: 'Choisissez une tranche', agencyStaff: 'Nombre de personnes dans l’agence', agencyStaffPlaceholder: 'Choisissez une tranche' },
+                fields: {
+                  fullName: 'Nom complet', fullNamePlaceholder: 'ex. Youssef El Idrissi',
+                  phone: 'Numéro de téléphone', phonePlaceholder: '06XXXXXXXX ou +2126XXXXXXXX', phoneHelper: 'Veuillez entrer un numéro marocain actif pour recevoir les détails du rendez-vous',
+                  email: 'Adresse e-mail', emailPlaceholder: 'nom@agence.ma',
+                  agencyName: 'Nom de l’agence immobilière', agencyNamePlaceholder: 'ex. Atlas Prestige Immobilier',
+                  city: 'Ville', cityPlaceholder: 'Choisissez votre ville',
+                  role: 'Votre rôle dans l’agence', rolePlaceholder: 'Choisissez votre rôle',
+                  roleOther: 'Précisez votre rôle', roleOtherPlaceholder: 'ex. Coordinatrice de bureau',
+                  dailyLeads: 'Nombre de prospects par jour', dailyLeadsPlaceholder: 'Choisissez une tranche',
+                  agencyStaff: 'Nombre de personnes dans l’agence', agencyStaffPlaceholder: 'Choisissez une tranche'
+                },
+                roles: [
+                  { value: 'owner', label: 'Directeur de l’agence' },
+                  { value: 'sales_manager', label: 'Responsable commercial' },
+                  { value: 'advisor', label: 'Conseiller immobilier' },
+                  { value: 'marketing', label: 'Responsable marketing' },
+                  { value: 'operations', label: 'Responsable opérations et administration' },
+                  { value: 'assistant', label: 'Assistant administratif' },
+                  { value: 'other', label: 'Autre rôle' }
+                ],
                 dailyLeadsOptions: [{ value: '1_50', label: 'De 1 à 50' }, { value: '50_100', label: 'De 50 à 100' }, { value: '100_300', label: 'De 100 à 300' }, { value: 'more_300', label: 'Plus de 300' }],
                 agencyStaffOptions: [{ value: '1_3', label: '1 à 3' }, { value: '4_10', label: '4 à 10' }, { value: '11_25', label: '11 à 25' }, { value: 'more_25', label: 'Plus de 25' }],
                 moroccanCities: [
@@ -876,7 +1087,18 @@
                   'Tan-Tan', 'Inezgane', 'Taroudant', 'Ifrane', 'Azrou', 'Sidi Kacem', 'Sidi Slimane', 'Kelaa des Sraghna', 'Youssoufia', 'Benguerir',
                   'Chefchaouen', 'Al Hoceïma', 'Ouezzane', 'Sefrou', 'Azemmour', 'Fquih Ben Salah', 'Taourirt', 'Berkane', 'Autre ville au Maroc'
                 ],
-                reassurance: 'Vos données sont strictement confidentielles et utilisées uniquement pour préparer votre consultation.', submitStep1: 'Continuer pour choisir la date de consultation', step2Heading: 'Sélectionnez le créneau qui vous convient le mieux', editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation gratuite', confirmationTitle: 'Votre consultation est confirmée avec succès !', confirmationDesc: (n, a) => `Merci ${n}. Votre rendez-vous pour l’agence ${a} est enregistré. Le lien d’accès vous sera envoyé.`, bookAnother: 'Réserver pour une autre agence'
+                reassurance: 'Vos données sont strictement confidentielles et utilisées uniquement pour préparer votre consultation.',
+                submitStep1: 'Continuer pour choisir la date de consultation',
+                step2Heading: 'Sélectionnez le créneau qui vous convient le mieux',
+                selectDate: 'Choisissez le jour de la consultation', selectTime: 'Choisissez l’heure', today: 'Aujourd’hui',
+                loadingSlots: 'Chargement des créneaux disponibles...', noSlots: 'Aucun créneau disponible ce jour-là, veuillez choisir une autre date.',
+                slotTaken: 'Ce créneau vient d’être réservé, veuillez en choisir un autre.', genericError: 'Une erreur est survenue, veuillez réessayer.',
+                submitting: 'Réservation en cours...', phoneInvalid: 'Entrez un numéro marocain valide (06, 07, 05 ou +212)',
+                emailInvalid: 'Entrez une adresse e-mail valide',
+                editData: 'Modifier les données', confirmAppointment: 'Confirmer la consultation gratuite',
+                confirmationTitle: 'Votre consultation est confirmée avec succès !',
+                confirmationDesc: (n, a) => `Merci ${n}. Votre rendez-vous pour l’agence ${a} est enregistré. Le lien d’accès vous sera envoyé.`,
+                bookAnother: 'Réserver pour une autre agence'
               },
               faq: {
                 kicker: 'Foire Aux Questions', title: 'Des réponses claires et précises à vos questions', subtitle: 'Les points essentiels concernant la sécurité de vos données, la migration et la consultation.',
