@@ -6,32 +6,61 @@
   <title>IBONDA - Real Estate Agency Management & Automation SaaS</title>
   <meta name="description" content="منظومة ذكية متكاملة لإدارة الوكالات العقارية وأتمتة التواصل وتأهيل العملاء وجدولة المعاينات في المغرب." />
 
+  <link rel="icon" type="image/png" href="ibonda-logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // ألوان IBONDA: بترولي + أبيض + برتقالي
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // البرتقالي: الأزرار والمؤشرات (يحل محل blue)
+            blue: {
+              50: '#FFF4F1', 100: '#FFE4DC', 200: '#FFC7B8', 300: '#FFA08A',
+              400: '#FF7A5C', 500: '#FF6A4D', 600: '#FF5533', 700: '#E8421F',
+              800: '#B8341A', 900: '#8A2814', 950: '#4A1409'
+            },
+            // البترولي: الخلفيات والنصوص (يحل محل slate)
+            slate: {
+              50: '#EEF7F8', 100: '#D5ECEF', 200: '#A9D8DE', 300: '#6FBBC4',
+              400: '#3E97A3', 500: '#1E7A87', 600: '#136270', 700: '#0E525D',
+              800: '#0B434C', 900: '#072F36', 950: '#041C21'
+            },
+            // الأخضر تحول لبترولي باش يبقى الكود متناسق
+            emerald: {
+              50: '#EEF7F8', 100: '#D5ECEF', 200: '#A9D8DE', 300: '#6FBBC4',
+              400: '#3E97A3', 500: '#1E7A87', 600: '#0B434C', 700: '#0E525D'
+            }
+          }
+        }
+      }
+    };
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 
   <style>
     body {
       font-family: 'Cairo', system-ui, -apple-system, sans-serif;
-      background-color: #070d1e;
-      color: #f1f5f9;
+      background-color: #041C21;
+      color: #EEF7F8;
       scroll-behavior: smooth;
     }
     body.font-latin-body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .font-latin { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     .hero-glow {
-      background: radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.18) 0%, rgba(30, 58, 138, 0.08) 45%, transparent 75%);
+      background: radial-gradient(circle at 50% 20%, rgba(255, 85, 51, 0.14) 0%, rgba(11, 67, 76, 0.35) 45%, transparent 75%);
     }
     input[type="range"]::-webkit-slider-thumb {
       appearance: none;
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #3b82f6;
+      background: #FF5533;
       cursor: pointer;
     }
   </style>
@@ -39,19 +68,19 @@
 
 <body x-data="ibondaApp()" x-init="init()" :class="lang === 'ar' ? '' : 'font-latin-body'" class="min-h-screen selection:bg-blue-600 selection:text-white">
 
-  <!-- 1. الهايدر (أبيض): اسم الوكالة + محول اللغات -->
-  <header class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <!-- 1. الهايدر: اللوغو + اسم الوكالة + محول اللغات -->
+  <header class="sticky top-0 z-50 w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-lg shadow-black/20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
-      <a href="#" class="font-latin text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-sm bg-blue-600 inline-block"></span>
-        <span>IBONDA</span>
+      <a href="#" class="flex items-center gap-3">
+        <img src="ibonda-logo.png" alt="IBONDA" class="h-11 w-11 rounded-xl object-cover shadow-lg shadow-black/40 ring-1 ring-teal-400/20" />
+        <span class="font-latin text-2xl font-black tracking-tight text-white">IBONDA</span>
       </a>
 
-      <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg p-1 text-xs">
-        <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition">العربية</button>
-        <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition font-latin">EN</button>
-        <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold' : 'text-slate-600 hover:text-slate-900'" class="px-2.5 py-1.5 rounded transition font-latin">FR</button>
+      <div class="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
+        <button @click="setLang('ar')" :class="lang === 'ar' ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30' : 'text-slate-300 hover:text-white'" class="px-2.5 py-1.5 rounded transition">العربية</button>
+        <button @click="setLang('en')" :class="lang === 'en' ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30' : 'text-slate-300 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">EN</button>
+        <button @click="setLang('fr')" :class="lang === 'fr' ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-600/30' : 'text-slate-300 hover:text-white'" class="px-2.5 py-1.5 rounded transition font-latin">FR</button>
       </div>
 
     </div>
@@ -77,7 +106,7 @@
           <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 shadow-2xl ring-1 ring-blue-500/20">
 
             <div class="w-full h-full relative overflow-hidden bg-[#060b1c] flex flex-col items-center justify-center p-6 text-center">
-              <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, #3b82f6 1px, transparent 0); background-size: 24px 24px;"></div>
+              <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 1px 1px, #FF5533 1px, transparent 0); background-size: 24px 24px;"></div>
 
               <template x-if="!hasStarted">
                 <div class="relative z-10 max-w-lg mx-auto">
@@ -114,7 +143,7 @@
 
             <!-- إشعار انتهاء الفيديو -->
             <template x-if="videoCompleted">
-              <div class="absolute top-4 inset-x-4 z-20 bg-blue-950/95 border border-blue-500/50 rounded-xl p-3.5 flex items-center justify-between gap-3 text-start shadow-xl">
+              <div class="absolute top-4 inset-x-4 z-20 bg-slate-950/95 border border-blue-500/50 rounded-xl p-3.5 flex items-center justify-between gap-3 text-start shadow-xl">
                 <div>
                   <p class="text-xs sm:text-sm font-semibold text-white" x-text="t().hero.videoEndedTitle"></p>
                   <p class="text-[11px] text-slate-300" x-text="t().hero.videoEndedDesc"></p>
@@ -147,7 +176,7 @@
 
         <!-- بعد انتهاء الفيديو -->
         <template x-if="videoCompleted">
-          <div class="max-w-2xl mx-auto mt-8 p-6 rounded-2xl bg-gradient-to-b from-blue-950/70 to-slate-900 border border-blue-500/30 text-center">
+          <div class="max-w-2xl mx-auto mt-8 p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-blue-500/30 text-center">
             <h3 class="text-xl font-bold text-white mb-2" x-text="t().postCta.title"></h3>
             <p class="text-sm text-slate-300 mb-6" x-text="t().postCta.subtitle"></p>
             <button @click="scrollToBooking()" class="px-8 py-4 text-base font-bold text-white bg-blue-600 hover:bg-blue-500 rounded-xl shadow-lg shadow-blue-600/40 cursor-pointer" x-text="t().postCta.button"></button>
@@ -504,7 +533,10 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-12 border-b border-slate-900 text-start">
         <div class="md:col-span-2 space-y-4">
-          <span class="font-latin text-2xl font-black text-white">IBONDA</span>
+          <div class="flex items-center gap-3">
+            <img src="ibonda-logo.png" alt="IBONDA" class="h-9 w-9 rounded-lg object-cover" />
+            <span class="font-latin text-2xl font-black text-white">IBONDA</span>
+          </div>
           <p class="text-sm text-slate-400 max-w-lg" x-text="t().footer.desc"></p>
           <div class="text-xs text-slate-400 font-medium" x-text="t().footer.tagline"></div>
         </div>
