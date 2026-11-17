@@ -13,24 +13,20 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // ألوان IBONDA: بترولي + أبيض + برتقالي
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            // البرتقالي: الأزرار والمؤشرات (يحل محل blue)
             blue: {
               50: '#FFF4F1', 100: '#FFE4DC', 200: '#FFC7B8', 300: '#FFA08A',
               400: '#FF7A5C', 500: '#FF6A4D', 600: '#FF5533', 700: '#E8421F',
               800: '#B8341A', 900: '#8A2814', 950: '#4A1409'
             },
-            // البترولي: الخلفيات والنصوص (يحل محل slate)
             slate: {
               50: '#EEF7F8', 100: '#D5ECEF', 200: '#A9D8DE', 300: '#6FBBC4',
               400: '#3E97A3', 500: '#1E7A87', 600: '#136270', 700: '#0E525D',
               800: '#0B434C', 900: '#072F36', 950: '#041C21'
             },
-            // الأخضر تحول لبترولي باش يبقى الكود متناسق
             emerald: {
               50: '#EEF7F8', 100: '#D5ECEF', 200: '#A9D8DE', 300: '#6FBBC4',
               400: '#3E97A3', 500: '#1E7A87', 600: '#0B434C', 700: '#0E525D'
@@ -68,7 +64,7 @@
 
 <body x-data="ibondaApp()" x-init="init()" :class="lang === 'ar' ? '' : 'font-latin-body'" class="min-h-screen selection:bg-blue-600 selection:text-white">
 
-  <!-- 1. الهايدر: اللوغو + اسم الوكالة + محول اللغات -->
+  <!-- 1. الهايدر -->
   <header class="sticky top-0 z-50 w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800 shadow-lg shadow-black/20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
@@ -378,25 +374,25 @@
 
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.fullName + ' *'"></label>
-                    <input type="text" x-model="form.fullName" required :placeholder="t().booking.fields.fullNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
+                    <input type="text" name="nom" x-model="form.fullName" required :placeholder="t().booking.fields.fullNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                   </div>
 
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.phone + ' *'"></label>
-                    <input type="tel" dir="ltr" x-model="form.phone" required :placeholder="t().booking.fields.phonePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
+                    <input type="tel" name="telephone" dir="ltr" x-model="form.phone" required :placeholder="t().booking.fields.phonePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
                     <p class="text-[10px] text-slate-500 mt-1" x-text="t().booking.fields.phoneHelper"></p>
                     <p class="text-[11px] text-rose-400 mt-1" x-show="phoneError" x-text="phoneError"></p>
                   </div>
 
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.email + ' *'"></label>
-                    <input type="email" dir="ltr" x-model="form.email" required :placeholder="t().booking.fields.emailPlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
+                    <input type="email" name="email" dir="ltr" x-model="form.email" required :placeholder="t().booking.fields.emailPlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 font-latin text-end">
                     <p class="text-[11px] text-rose-400 mt-1" x-show="emailError" x-text="emailError"></p>
                   </div>
 
                   <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2" x-text="t().booking.fields.agencyName + ' *'"></label>
-                    <input type="text" x-model="form.agencyName" required :placeholder="t().booking.fields.agencyNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
+                    <input type="text" name="agence" x-model="form.agencyName" required :placeholder="t().booking.fields.agencyNamePlaceholder" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500">
                   </div>
 
                   <div>
@@ -568,8 +564,44 @@
 
   <!-- 10. المنطق والترجمات -->
   <script>
-    // رابط Google Apps Script (Web app)
+    // ===== الإعدادات =====
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSIbGfP9d41Ugn7QdnHduy4SYD2i6YMDu2RQYRwaSoeJ5i5If1Hq_j20v0323-BEU/exec';
+
+    // Supabase: الرابط الجذري للمشروع فقط (بدون /rest/v1/)
+    const SUPABASE_URL = 'https://hiyvxgazqkmnduqxnjmm.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_L07q7AM5hejZc9aXXm1Vhg_XV0VTwqj';
+
+    // ===== معرف الزائر (مجهول) =====
+    let idSession = localStorage.getItem('ibonda_session');
+    if (!idSession) {
+      idSession = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+      localStorage.setItem('ibonda_session', idSession);
+    }
+
+    // ===== إرسال إلى Supabase (لا يعطّل الصفحة إذا فشل) =====
+    async function supabaseInsert(table, data) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) console.error('Supabase error:', res.status, await res.text());
+        return res.ok;
+      } catch (err) {
+        console.error('Supabase network error:', err);
+        return false;
+      }
+    }
+
+    // تتبع خطوات القمع: visite / video_terminee / formulaire_commence / rdv_reserve
+    function suivreEvenement(evenement) {
+      supabaseInsert('evenements_entonnoir', { id_session: idSession, evenement });
+    }
 
     function ibondaApp() {
       return {
@@ -603,6 +635,19 @@
         init() {
           this.setLang('ar');
           this.buildDates();
+          // 1) زيارة الصفحة
+          suivreEvenement('visite');
+          // 2) بدء تعبئة الفورم (أول تركيز على أي حقل)
+          this.$nextTick(() => {
+            document.querySelectorAll('form input, form select').forEach(el => {
+              el.addEventListener('focus', () => {
+                if (!this._formStarted) {
+                  this._formStarted = true;
+                  suivreEvenement('formulaire_commence');
+                }
+              });
+            });
+          });
         },
 
         setLang(l) {
@@ -625,9 +670,12 @@
           this.timer = null;
         },
         finishVideo() {
+          if (this.videoCompleted) return;
           this.pauseTimer();
           this.isPlaying = false;
           this.videoCompleted = true;
+          // 3) انتهاء الفيديو
+          suivreEvenement('video_terminee');
         },
         togglePlay() {
           this.hasStarted = true;
@@ -694,6 +742,18 @@
           this.emailError = this.isValidEmail(this.form.email) ? '' : this.t().booking.emailInvalid;
           if (this.phoneError || this.emailError) return;
 
+          // حفظ الشخص كـ prospect في Supabase (بالأسماء الفرنسية)
+          const fr = this.t('fr').booking;
+          const pick = (list, value) => (list.find(o => o.value === value) || {}).label || '';
+          supabaseInsert('prospects', {
+            nom_complet: this.form.fullName.trim(),
+            telephone: this.form.phone.trim(),
+            email: this.form.email.trim(),
+            nom_agence: this.form.agencyName.trim(),
+            ville: fr.moroccanCities[Number(this.form.city)] || '',
+            source: 'landing'
+          });
+
           this.errorMsg = '';
           this.selectedDate = '';
           this.selectedTime = '';
@@ -737,7 +797,7 @@
           }
         },
 
-        // بيانات الحجز تُرسل دائماً بالفرنسية، بغض النظر عن لغة الصفحة
+        // بيانات الحجز تُرسل دائماً بالفرنسية
         buildPayload() {
           const fr = this.t('fr').booking;
           const pick = (list, value) => (list.find(o => o.value === value) || {}).label || '';
@@ -774,6 +834,8 @@
             const j = await this.parseResponse(res);
 
             if (j.ok) {
+              // 4) حجز الموعد بنجاح
+              suivreEvenement('rdv_reserve');
               this.step = 3;
               if (window.confetti) confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
             } else if (j.error === 'SLOT_TAKEN') {
@@ -1193,5 +1255,3 @@
   </script>
 </body>
 </html>
-<script>
-
